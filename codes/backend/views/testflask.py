@@ -29,6 +29,9 @@ def edit_company_info():
 def test_get_and_edit_company():
 	import requests
 
+
+
+
 	test_company = {
 		"asd": 123451,
 		"sdfg": "过去玩恶人"
