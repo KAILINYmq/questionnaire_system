@@ -1,6 +1,6 @@
 from flask import Blueprint, jsonify, request, render_template
 from config import gssi_col
-
+import pymongo
 
 view = Blueprint('test', __name__)
 
@@ -11,7 +11,6 @@ def asd():
 @view.route("/asd", methods=["GET"])
 def sdg():
 	gssi_col.insert(dict(request.args))
-	
 	return render_template('testflask.html', button_name='dsfgv')
 
 

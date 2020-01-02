@@ -59,7 +59,8 @@ class CompanyInfo {
 	登记注册类型	登记注册类型s
 	企业从业人员信息	从业人员数量信息
 	企业主要经济指标及企业人工成本指标	企业主要经济指标及企业人工成本指标
-
+	从业人员工资报酬信息	List[从业人员工资报酬信息]
+	had_commited	bool
 }
 class 从业人员工资报酬信息{
 	职工代码: int
@@ -79,5 +80,9 @@ class 从业人员工资报酬信息{
 	"津补贴（类）": FixDecimal
 	加班加点工资: FixDecimal
 }
-
+class CommitRecord{
+	_id: ObjectId 
+	company_id: ObjectId 
+	file_path: str
+}
 @enduml
