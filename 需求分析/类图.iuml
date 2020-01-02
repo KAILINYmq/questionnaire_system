@@ -78,7 +78,6 @@ class 从业人员工资报酬信息{
 	"绩效工资（类)": FixDecimal
 	"津补贴（类）": FixDecimal
 	加班加点工资: FixDecimal
-
 }
 
 @enduml
