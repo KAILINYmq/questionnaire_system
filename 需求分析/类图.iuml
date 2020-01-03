@@ -47,10 +47,12 @@ class 企业主要经济指标及企业人工成本指标 {
 	住房费用: FixDecimal
 	其他人工成本: FixDecimal
 }
-class CompanyInfo {
+
+class CompanyBrief {
 	统一社会信用代码	str_18
 	组织机构代码	str_9
 	法人单位名称	str
+	法定代表人	str
 	联系方式	联系方式
 	企业所在地行政区划代码	地域s
 	单位隶属关系	单位隶属关系s
@@ -58,6 +60,15 @@ class CompanyInfo {
 	企业规模	企业规模s
 	登记注册类型	登记注册类型s
 	企业从业人员信息	从业人员数量信息
+}
+
+class CompanyListInfo {
+	current_page	int
+	max_page	int
+	data	List[CompanyBrief]
+}
+
+class CompanyInfo: CompanyBrief {
 	企业主要经济指标及企业人工成本指标	企业主要经济指标及企业人工成本指标
 	从业人员工资报酬信息	List[从业人员工资报酬信息]
 	had_commited	bool
