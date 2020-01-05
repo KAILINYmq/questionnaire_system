@@ -1,9 +1,3 @@
-@startuml 用例图
-skinparam classFontSize 12
-skinparam classFontName Consolas
-
-scale 2
-
 class LoginResult {
     login_token: str
     fail_message: str
@@ -49,27 +43,10 @@ class 企业主要经济指标及企业人工成本指标 {
 }
 
 class CompanyBrief {
-<<<<<<< HEAD
-	统一社会信用代码	str_18
-	组织机构代码	str_9
-	法人单位名称	str
-<<<<<<< HEAD
-	法定代表人	str
-=======
-	"法定代表人 （单位负责人）" str
->>>>>>> push
-	联系方式	联系方式
-	企业所在地行政区划代码	地域s
-	单位隶属关系	单位隶属关系s
-	行业类别代码	行业类别代码s
-	企业规模	企业规模s
-	登记注册类型	登记注册类型s
-	企业从业人员信息	从业人员数量信息
-=======
-	统一社会信用代码: str_18
-	组织机构代码: str_9
+	统一社会信用代码: str
+	组织机构代码: str
 	法人单位名称: str
-	"法定代表人 （单位负责人）" str
+	"法定代表人 （单位负责人）": str
 	联系方式: 联系方式
 	企业所在地行政区划代码: 地域s
 	单位隶属关系: 单位隶属关系s
@@ -77,7 +54,6 @@ class CompanyBrief {
 	企业规模: 企业规模s
 	登记注册类型: 登记注册类型s
 	企业从业人员信息: 从业人员数量信息
->>>>>>> ADT以及一些修改
 }
 
 class CompanyListInfo {
@@ -91,6 +67,7 @@ class CompanyInfo: CompanyBrief {
 	从业人员工资报酬信息: List[从业人员工资报酬信息]
 	had_commited: bool
 }
+
 class 从业人员工资报酬信息{
 	职工代码: int
 	性别: 性别s
@@ -98,7 +75,7 @@ class 从业人员工资报酬信息{
 	学历: 学历s
 	参加工作年份: int
 	职业: 职业s
-	"管理岗位/专业技术职称/职业技能等级": 
+	"管理岗位/专业技术职称/职业技能等级": str
 	用工形式: 用工形式s
 	劳动合同类型: 劳动合同类型s
 	全年周平均工作小时数: int
@@ -110,8 +87,7 @@ class 从业人员工资报酬信息{
 	加班加点工资: FixDecimal
 }
 class CommitRecord{
-	_id: ObjectId 
-	company_id: ObjectId 
+	_id: ObjectId
+	company_id: ObjectId
 	file_path: str
 }
-@enduml
