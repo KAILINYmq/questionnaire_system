@@ -1,2 +1,4 @@
 __pycache__
 .pytest_cache
+codes/backend/common/num.py
+codes/backend/common/nums_len

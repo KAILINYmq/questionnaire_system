@@ -1,7 +1,7 @@
 from __future__ import annotations
 from typing import List, Dict, Union, Any, Tuple, Callable
 from decimal import Decimal
-
+import copy
 from bson import ObjectId
 
 from common.static_data import data
@@ -27,8 +27,8 @@ class Field:
 class Object:
 
     def __init__(self):
-        self.members: Dict[str, Tuple[Any, Any]] = {}
-        #             key       type value
+        self.members: Dict[str, List[Any, Any]] = {}
+        #             key            type value
         self.name: str = ""
         self.parent: List[Union[str, Object]] = []
 
@@ -62,7 +62,7 @@ class Object:
                     else:
                         raise Exception(f"类型不支持: {type_text}")
 
-        self.members[key] = (type_text, value)
+        self.members[key] = [type_text, value]
 
     def add_parent(self, text: str = None, object: Object = None):
         global objects
@@ -77,16 +77,38 @@ class Object:
         self.members.update(object.members)
 
     def set(self, **kwargs):
-        pass
+        for key, value in kwargs.items():
+            if key in self.members:
+                self.members[key][1] = value
 
     def show_info(self):
         return f'{self.name=}', f'{self.parent=}', f'{self.members=}'
 
     def to_dict(self):
-        pass
+        ret_dict = {}
+        for key, (type_, value) in self.members.items():
+
+            if type_ not in map(eval, base_type):
+                # 不是基本类型
+                if hasattr(type_, '_name') and type_._name == 'List':
+                    # 是个list
+                    ret_dict[key] = copy.deepcopy(value)
+                else:
+                    # 不是list之一就是结构体
+                    if type_ == Any:
+                        # 未指定类型, 是属于某集合之一的
+                        ret_dict[key] = value
+                    else:
+                        # 是个结构体
+                        ret_dict[key] = value.to_dict()
+            else:
+                ret_dict[key] = value
+
+        return ret_dict
 
 
 objects: Dict[str, Object] = {}
+
 
 def new(obj: Object):
     global objects
@@ -104,25 +126,24 @@ def new(obj: Object):
             # 不是基本类型
             if hasattr(type_, '_name') and type_._name == 'List':
                 # 是个list
-                new_obj.members[mem_name] = (type_, [])
+                new_obj.members[mem_name] = [type_, []]
             else:
                 # 不是list之一就是结构体
                 if hasattr(type_, 'endswith') and type_.endswith('s'):
                     # 是属于某集合之一的
                     value = None
-                    new_obj.members[mem_name] = (None, None)
+                    new_obj.members[mem_name] = [Any, None]
                 else:
                     # 是个结构体
-                    print(mem_name, type_, value)
+                    # print(mem_name, type_, value)
                     type_.show_info()
-                    new_obj.members[mem_name] = (type_, new(type_))
+                    new_obj.members[mem_name] = [type_, new(type_)]
         else:
-            new_obj.members[mem_name] = (type_, value)
+            new_obj.members[mem_name] = [type_, value]
     return new_obj
 
 
 def test_parse():
-
     with open('ADT.js', encoding='utf-8') as f:
         test_text = f.read()
 
@@ -154,8 +175,23 @@ def test_parse():
         objects[object.name] = object
         print(f'{object.name=}', f'{object.parent=}', f'{object.members=}')
 
-        tmp_obj = new(object)
-        print(f'{tmp_obj.name=}', f'{tmp_obj.parent=}', f'{tmp_obj.members=}')
+    obj = new(objects['CompanyInfo'])
+    obj.set(统一社会信用代码=123)
+    assert obj.to_dict() == {'统一社会信用代码': 123, '组织机构代码': None, '法人单位名称': None, '联系方式': {'固话': None, '手机': None},
+                             '企业所在地行政区划代码': None, '单位隶属关系': None, '行业类别代码': None, '企业规模': None, '登记注册类型': None,
+                             '企业从业人员信息': {'平均人数': None, '在岗人数': None, '劳务派遣人数': None},
+                             '企业主要经济指标及企业人工成本指标': {
+                                 '利润总额': None, '固定资产折旧': None, '主营业务税金及附加': None, '成本费用总额': None,
+                                 '人工成本总计': None,
+                                 '从业人员工资总额': {
+                                     '从业人员工资总额': None, '在岗职工工资总额': None, '劳务派遣人员工资总额': None
+                                 },
+                                 '福利费用': None, '教育经费': None, '保险费用': None, '劳动保护费用': None,
+                                 '住房费用': None, '其他人工成本': None
+                             },
+                             '从业人员工资报酬信息': [],
+                             'had_commited': None}
+    print(obj.to_dict())
 
 
 test_parse()
