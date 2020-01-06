@@ -62,12 +62,6 @@ class CompanyListInfo {
 	data: List[CompanyBrief]
 }
 
-class CompanyInfo: CompanyBrief {
-	企业主要经济指标及企业人工成本指标: 企业主要经济指标及企业人工成本指标
-	从业人员工资报酬信息: List[从业人员工资报酬信息]
-	had_commited: bool
-}
-
 class 从业人员工资报酬信息{
 	职工代码: int
 	性别: 性别s
@@ -86,6 +80,13 @@ class 从业人员工资报酬信息{
 	"津补贴（类）": FixDecimal
 	加班加点工资: FixDecimal
 }
+
+class CompanyInfo: CompanyBrief {
+	企业主要经济指标及企业人工成本指标: 企业主要经济指标及企业人工成本指标
+	从业人员工资报酬信息: List[从业人员工资报酬信息]
+	had_commited: bool
+}
+
 class CommitRecord{
 	_id: ObjectId
 	company_id: ObjectId
