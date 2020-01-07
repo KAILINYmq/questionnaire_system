@@ -4,7 +4,7 @@ from decimal import Decimal
 import copy
 from bson import ObjectId
 
-from common.static_data import data
+from common.static_data import data, rules
 import re
 
 FixDecimal = Decimal
@@ -80,7 +80,8 @@ class Object:
         for key, value in kwargs.items():
             if key in self.members:
                 self.members[key][1] = value
-
+    def get(self, name):
+        return self.members[name]
     def show_info(self):
         return f'{self.name=}', f'{self.parent=}', f'{self.members=}'
 
@@ -95,7 +96,7 @@ class Object:
                     ret_dict[key] = copy.deepcopy(value)
                 else:
                     # 不是list之一就是结构体
-                    if type_ == Any:
+                    if hasattr(type_, 'endswith') and type_.endswith('s'):
                         # 未指定类型, 是属于某集合之一的
                         ret_dict[key] = value
                     else:
@@ -105,6 +106,68 @@ class Object:
                 ret_dict[key] = value
 
         return ret_dict
+
+    def check(self):
+        messages = []
+
+        for key, (type_, value) in self.members.items():
+            # print(key, (type_, value))
+            if type_ not in map(eval, base_type):
+                # 不是基本类型
+                if hasattr(type_, '_name') and type_._name == 'List':
+                    # 是个list
+                    inner_type = type_.__args__[0]
+
+                    messages.extend([self._check(key, v, inner_type.name) for v in value])
+                else:
+                    # 不是list之一就是结构体
+                    if hasattr(type_, 'endswith') and type_.endswith('s'):
+                        # 未指定类型, 是属于某集合之一的, 这些已经在rule里写了规则了
+                        messages.append(self._check(key, value, self.name))
+                    else:
+                        # 是个结构体
+                        messages.append(value.check())
+            else:
+                # 基本类型
+                messages.append(self._check(key, value, self.name))
+        return messages
+    def _check(self, key, value, rule_name=None):
+        message = {
+            'error': [],
+            'warring': []
+        }
+        def in_(x, list_name):
+            return x in data.get(list_name)
+
+        def not_null(x):
+            return len(x) > 0
+
+
+        if not rule_name:
+            rule_name = self.name
+
+        check_info = rules.get(rule_name).get(key)
+        if check_info:
+            for check_type in ['error', 'warring']:
+                error_check = check_info.get(check_type)
+                if error_check:
+                    for check_condition, check_message in error_check:
+                        x = value
+                        try:
+                            ret = eval(check_condition)
+                        except Exception as e:
+                            message['error'].append(str(e))
+                        else:
+                            if not ret:
+                                if not check_message:
+                                    if "in_" in check_condition:
+                                        check_message = f"{key}: {value} 不在规定范围内"
+                                    elif 'not_null' in check_condition:
+                                        check_message = f"{key} 不可空"
+                                message[check_type].append(check_message)
+                                break
+
+        return message
 
 
 objects: Dict[str, Object] = {}
@@ -132,7 +195,7 @@ def new(obj: Object):
                 if hasattr(type_, 'endswith') and type_.endswith('s'):
                     # 是属于某集合之一的
                     value = None
-                    new_obj.members[mem_name] = [Any, None]
+                    new_obj.members[mem_name] = [type_, None]
                 else:
                     # 是个结构体
                     # print(mem_name, type_, value)
@@ -149,7 +212,7 @@ def test_parse():
 
     classes = re.findall(r'class\s+\w+.*?[{].+?[}]', test_text, re.DOTALL)
     for class_ in classes:
-        print(f'{class_=}')
+        # print(f'{class_=}')
 
         object = Object()
 
@@ -161,37 +224,54 @@ def test_parse():
             [object.add_parent(i) for i in object_parents]
         else:
             raise Exception('object_name_and_parents未匹配成功')
-        print(f'{object_name_and_parents=}')
+        # print(f'{object_name_and_parents=}')
 
         object_body = re.search(r'((?<=[{]).+(?=[}]))', class_, re.DOTALL)
         object_body = object_body.groups() and object_body.groups()[0]
-        print(f'{object_body=}')
+        # print(f'{object_body=}')
 
         object_fields = re.findall(r'(?P<filed>\w+)\s*:\s*(?P<type>\w+[[]*\w*[]]*)', object_body)
-        print(object_fields)
+        # print(object_fields)
         for field_text, type_ in object_fields:
             object.add_member(field_text, type_)
 
         objects[object.name] = object
-        print(f'{object.name=}', f'{object.parent=}', f'{object.members=}')
+        # print(f'{object.name=}', f'{object.parent=}', f'{object.members=}')
 
     obj = new(objects['CompanyInfo'])
-    obj.set(统一社会信用代码=123)
-    assert obj.to_dict() == {'统一社会信用代码': 123, '组织机构代码': None, '法人单位名称': None, '联系方式': {'固话': None, '手机': None},
-                             '企业所在地行政区划代码': None, '单位隶属关系': None, '行业类别代码': None, '企业规模': None, '登记注册类型': None,
-                             '企业从业人员信息': {'平均人数': None, '在岗人数': None, '劳务派遣人数': None},
-                             '企业主要经济指标及企业人工成本指标': {
-                                 '利润总额': None, '固定资产折旧': None, '主营业务税金及附加': None, '成本费用总额': None,
-                                 '人工成本总计': None,
-                                 '从业人员工资总额': {
-                                     '从业人员工资总额': None, '在岗职工工资总额': None, '劳务派遣人员工资总额': None
-                                 },
-                                 '福利费用': None, '教育经费': None, '保险费用': None, '劳动保护费用': None,
-                                 '住房费用': None, '其他人工成本': None
-                             },
-                             '从业人员工资报酬信息': [],
-                             'had_commited': None}
-    print(obj.to_dict())
+    obj.set(统一社会信用代码='123')
+    obj.set(组织机构代码='123')
+    obj.set(法人单位名称='123')
 
+    t = obj.get('联系方式')[1]
+    t.set(固话='123')
+    t.set(手机='2351')
+    obj.set(联系方式=t)
+
+    obj.set(企业所在地行政区划代码='123')
+    obj.set(单位隶属关系='123')
+    obj.set(行业类别代码='123')
+    obj.set(企业规模='123')
+    obj.set(登记注册类型='123')
+
+    print(obj.to_dict())
+    assert obj.to_dict() == {
+        '统一社会信用代码': '123', '组织机构代码': '123', '法人单位名称': '123', '联系方式': {'固话': '123', '手机': '2351'},
+        '企业所在地行政区划代码': '123', '单位隶属关系': '123', '行业类别代码': '123', '企业规模': '123', '登记注册类型': '123',
+        '企业从业人员信息': {'平均人数': None, '在岗人数': None, '劳务派遣人数': None},
+        '企业主要经济指标及企业人工成本指标': {
+            '利润总额': None, '固定资产折旧': None, '主营业务税金及附加': None, '成本费用总额': None,
+            '人工成本总计': None,
+            '从业人员工资总额': {
+                '从业人员工资总额': None, '在岗职工工资总额': None, '劳务派遣人员工资总额': None
+            },
+            '福利费用': None, '教育经费': None, '保险费用': None, '劳动保护费用': None,
+            '住房费用': None, '其他人工成本': None
+        },
+        '从业人员工资报酬信息': [],
+        'had_commited': None
+    }
+    print(obj.to_dict())
+    print(obj.check())
 
 test_parse()
