@@ -8,20 +8,16 @@ from common.static_data import data, rules
 import re
 
 FixDecimal = Decimal
+objects: Dict[str, Object] = {}
 
 base_type = {
     'bool': False,
     'int': 0,
     'str': '',
     'FixDecimal': FixDecimal(0),
-    'ObjectId': ObjectId()
+    'ObjectId': ObjectId(),
+    'Decimal': Decimal(0)
 }
-
-
-class Field:
-    field_name: str = ''
-    value: Any = None
-    constraints: List
 
 
 class Object:
@@ -29,6 +25,7 @@ class Object:
     def __init__(self):
         self.members: Dict[str, List[Any, Any]] = {}
         #             key            type value
+
         self.name: str = ""
         self.parent: List[Union[str, Object]] = []
 
@@ -80,8 +77,10 @@ class Object:
         for key, value in kwargs.items():
             if key in self.members:
                 self.members[key][1] = value
+
     def get(self, name):
         return self.members[name]
+
     def show_info(self):
         return f'{self.name=}', f'{self.parent=}', f'{self.members=}'
 
@@ -107,8 +106,61 @@ class Object:
 
         return ret_dict
 
+    def from_dict(self, data: dict):
+        # self.set(**data)
+        for key, value in data.items():
+            if isinstance(value, dict):
+                # 是个结构体
+                self.set(**{
+                    key: new(objects[key]).from_dict(value)}
+                )
+            elif isinstance(value, list):
+                self.add_member(key, f"List[{key}]")
+                self.members[key][1] = value
+            else:
+                # 是基本类型
+                # self.set(key=value)
+                self.set(**{
+                    key: value}
+                )
+        return self
+
+    @staticmethod
+    def read_from(filename: str):
+        global objects
+        with open(filename, encoding='utf-8') as f:
+            test_text = f.read()
+
+        classes = re.findall(r'class\s+\w+.*?[{].+?[}]', test_text, re.DOTALL)
+        for class_ in classes:
+            # print(f'{class_=}')
+
+            object = Object()
+
+            object_name_and_parents: list = re.findall('(?<=class).+(?={)', class_)
+            if len(object_name_and_parents) == 1:
+                object_name_and_parents: str = object_name_and_parents[0].strip()
+                object_name, *object_parents = [i.strip() for i in object_name_and_parents.split(':')]
+                object.name = object_name
+                [object.add_parent(i) for i in object_parents]
+            else:
+                raise Exception('object_name_and_parents未匹配成功')
+            # print(f'{object_name_and_parents=}')
+
+            object_body = re.search(r'((?<=[{]).+(?=[}]))', class_, re.DOTALL)
+            object_body = object_body.groups() and object_body.groups()[0]
+            # print(f'{object_body=}')
+
+            object_fields = re.findall(r'(?P<filed>\w+)\s*:\s*(?P<type>\w+[[]*\w*[]]*)', object_body)
+            # print(object_fields)
+            for field_text, type_ in object_fields:
+                object.add_member(field_text, type_)
+
+            objects[object.name] = object
+        return objects
+
     def check(self):
-        messages = []
+        messages: List[Dict[str, List[str]]] = []
 
         for key, (type_, value) in self.members.items():
             # print(key, (type_, value))
@@ -131,17 +183,18 @@ class Object:
                 # 基本类型
                 messages.append(self._check(key, value, self.name))
         return messages
+
     def _check(self, key, value, rule_name=None):
         message = {
             'error': [],
             'warring': []
         }
+
         def in_(x, list_name):
             return x in data.get(list_name)
 
         def not_null(x):
             return len(x) > 0
-
 
         if not rule_name:
             rule_name = self.name
@@ -170,10 +223,7 @@ class Object:
         return message
 
 
-objects: Dict[str, Object] = {}
-
-
-def new(obj: Object):
+def new(obj: Object) -> Object:
     global objects
 
     new_obj = Object()
@@ -273,5 +323,3 @@ def test_parse():
     }
     print(obj.to_dict())
     print(obj.check())
-
-test_parse()

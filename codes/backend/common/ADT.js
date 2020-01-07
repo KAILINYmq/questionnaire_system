@@ -53,7 +53,7 @@ class CompanyBrief {
 	行业类别代码: 行业类别代码s
 	企业规模: 企业规模s
 	登记注册类型: 登记注册类型s
-	企业从业人员信息: 从业人员数量信息
+	从业人员数量信息: 从业人员数量信息
 }
 
 class CompanyListInfo {

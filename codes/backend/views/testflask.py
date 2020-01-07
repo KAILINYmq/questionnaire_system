@@ -1,55 +1,107 @@
 from flask import Blueprint, jsonify, request, render_template
+from config import company_col, CURRENT_DIR
+from common.ADT_reg import Object, objects, new
 
-from common.ADT import CompanyInfo
-from config import company_col
+try:
+    objects = Object.read_from(CURRENT_DIR + '/common/ADT.js')
+except:
+    pass
+
 import pymongo
 from bson import ObjectId
+from decimal import Decimal
+
+FixDecimal = Decimal
 
 view = Blueprint('test', __name__)
 
+
 @view.route("/", methods=["GET"])
 def asd():
-	return "hello world"
+    return "hello world"
+
 
 @view.route("/asd", methods=["GET"])
 def sdg():
-	return render_template('testflask.html', button_name='dsfgv')
-
+    return render_template('testflask.html', button_name='dsfgv')
 
 
 @view.route("/get_company_info", methods=["GET"])
 def get_company_info():
-	item = company_col.find_one({
-		"_id": ObjectId(request.json.get('id'))
-	})
+    item = company_col.find_one({
+        "_id": ObjectId(request.json.get('id'))
+    })
 
-	return jsonify(item or {})
+    return jsonify(item or {})
 
 
 @view.route("/edit_company_info", methods=["POST"])
 def edit_company_info():
-	print(list(CompanyInfo.__dict__.keys()), list(request.json.keys()))
-	# assert list(CompanyInfo.__dict__.keys()) == list(request.json.keys())
-	data: CompanyInfo = request.json
+    # assert list(CompanyInfo.__dict__.keys()) == list(request.json.keys())
+    ret = {}
 
-	filter = {'统一社会信用代码': data['统一社会信用代码']}
-	item = company_col.find_one(filter)
-	if item:
-		return jsonify(company_col.update_one(filter, data).raw)
-	else:
-		return jsonify(company_col.insert_one(data).raw)
+    data: dict = request.json
+    data: Object = new(objects['CompanyInfo']).from_dict(data)
+    check_ret = data.check()
+    flag = True
+    for item in check_ret:
+        if 'error' in item.keys():
+            flag = False
+            ret['oper_result'] = flag
+            break
+    if flag:
+
+        filter = {'统一社会信用代码': data.get('统一社会信用代码')}
+        item = company_col.find_one(filter)
+        if item:
+            ret['oper_result'] = company_col.update_one(filter, data).raw
+        else:
+            ret['oper_result'] = company_col.insert_one(data).raw
+    ret['message'] = check_ret
+    return jsonify(ret)
+
 
 def test_edit():
-	import requests as req
-	item = CompanyInfo(统一社会信用代码=123)
+    objects = Object.read_from('../common/ADT.js')
 
+    import requests as req
+    item = {'asd': 1234}
 
-	res = req.post(
-		'http://127.0.0.1/test/edit_company_info',
-		json=item.__dict__
-	)
-	assert res.json() == 0
-	# res = req.get(
-	# 	'http://127.0.0.1/test/get_company_info',
-	# 	json={"id": }
-	# )
+    res = req.post(
+        'http://127.0.0.1/test/edit_company_info',
+        json=item
+    )
+
+    assert not res.json()['oper_result']
+
+    temp = FixDecimal('100.12')
+    item = {
+        '企业主要经济指标及企业人工成本指标': {
+            "销售（营业）收入": temp,
+            '利润总额': temp,
+            '固定资产折旧': temp,
+            '主营业务税金及附加': temp,
+            '成本费用总额': temp,
+            '人工成本总计': temp,
+            '从业人员工资总额': {
+                '从业人员工资总额': temp,
+                '在岗职工工资总额': temp,
+                '劳务派遣人员工资总额': temp
+            },
+            '福利费用': temp,
+            '教育经费': temp,
+            '保险费用': temp,
+            '劳动保护费用': temp,
+            '住房费用': temp,
+            '其他人工成本': temp,
+        },
+        '从业人员工资报酬信息': [],
+        'had_commited': True
+    }
+    item = new(objects['CompanyInfo']).from_dict(item)
+
+    res = req.post(
+        'http://127.0.0.1/test/edit_company_info',
+        json=item.to_dict()
+    )
+    assert res.json() == False
