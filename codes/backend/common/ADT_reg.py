@@ -196,6 +196,9 @@ class Object:
         def not_null(x):
             return len(x) > 0
 
+        def number_(x, min, max):
+             return x >= min and x<= max
+
         if not rule_name:
             rule_name = self.name
 
