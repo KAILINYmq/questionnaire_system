@@ -82,7 +82,8 @@ class Object:
         return self.members[name]
 
     def show_info(self):
-        return f'{self.name=}', f'{self.parent=}', f'{self.members=}'
+        return ""
+        # return f'{self.name=}', f'{self.parent=}', f'{self.members=}'
 
     def to_dict(self):
         ret_dict = {}
