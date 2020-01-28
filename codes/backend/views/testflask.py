@@ -23,15 +23,17 @@ def asd():
 
 @view.route("/asd", methods=["GET"])
 def sdg():
-    return render_template('testflask.html', button_name='dsfgv')
+    return render_template('testflask.html')
 
-
+count = 1
 @view.route("/get_company_info", methods=["GET"])
 def get_company_info():
+    global count
     item = company_col.find_one({
-        "_id": ObjectId(request.json.get('id'))
+        "_id": ObjectId(request.args.get('id'))
     })
-
+    count += 1
+    return jsonify({"asd": count})
     return jsonify(item or {})
 
 
