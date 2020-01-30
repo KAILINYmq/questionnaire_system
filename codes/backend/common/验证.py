@@ -51,6 +51,12 @@ def 值判定(
     max_open = True,
     min_open = True
 ):
+    if (min_len is not None) & (max_len is not None):
+        if (not (x >= min_len) & (x <= max_len)):
+            exception_text = "{0}必须在{1}和{2}之间".format(
+                field_name, min_len, max_len
+            )
+            raise Exception(exception_text)
     if max_len is not None:
         if ((not x < max_len) if max_open else (not x <= max_len)):
             exception_text = "{0}必须小于{2}{1}".format(
@@ -63,6 +69,9 @@ def 值判定(
                 field_name, min_len, "等于" if not min_open else ""
             )
             raise Exception(exception_text)
+   
+       
+  
 def 非空判定(
     x: str,
     field_name: str
@@ -94,13 +103,10 @@ def 验证_固话_错误(x: str):
     )
     
 def 验证_手机_错误(x: str):
-    长度判定(
+    等长判定(
         x,
         field_name="手机号码",
-        min_len=11,
-        max_len=11,
-        max_open=False,
-        min_open=False
+        length_first=11
     )
 
 def 验证_平均人数_错误(x: int):
@@ -209,6 +215,151 @@ def 验证_登记注册类型_错误(x: str):
         belong_name="登记注册类型s"
     )
 
+def 验证_销售_营业_收入_错误(x: int):
+    值判定(
+        x,
+        field_name="销售（营业）收入",
+        min_len=0,
+    )
+
+def 验证_利润总额_错误(x: int):
+    值判定(
+        x,
+        field_name="利润总额",
+        min_len=0,
+    )
+
+def 验证_固定资产折旧_错误(x: int):
+    值判定(
+        x,
+        field_name="固定资产折旧",
+        min_len=0,
+        min_open=False
+    )
+
+def 验证_主营业务税金及附加_错误(x: int):
+    值判定(
+        x,
+        field_name="主营业务税金及附加",
+        min_len=0,
+        min_open=False
+    )
+
+def 验证_人工成本总计_错误(x: int):
+    值判定(
+        x,
+        field_name="人工成本总计",
+        min_len=0
+    )
+
+def 验证_福利费用_错误(x: int):
+    值判定(
+        x,
+        field_name="福利费用",
+        min_len=0
+    )
+
+def 验证_保险费用_错误(x: int):
+    值判定(
+        x,
+        field_name="保险费用",
+        min_len=0
+    )
+
+def 验证_职工代码_错误(x: str):
+    非空判定(
+        x,
+        field_name="职工代码",
+    )
+
+def 验证_性别_错误(x: str):
+    存在性判定(
+        x,
+        field_name="性别",
+        belong_name="性别s"
+    )
+
+def 验证_出生年份_错误(x: int):
+    值判定(
+        x,
+        field_name="出生年份",
+        min_len=1956,
+        max_len=2006,
+        max_open=False,
+        min_open=False
+    )
+
+def 验证_学历_错误(x: str):
+    存在性判定(
+        x,
+        field_name="学历",
+        belong_name="学历s"
+    )
+
+def 验证_参加工作年份_错误(x: int):
+    值判定(
+        x,
+        field_name="参加工作年份",
+        min_len=1965,
+        max_len=2017,
+        max_open=False,
+        min_open=False
+    )
+
+def 验证_职业_错误(x: str):
+    存在性判定(
+        x,
+        field_name="职业",
+        belong_name="职业s"
+    )
+
+def 验证_管理岗位_专业技术职称_职业技能等级_错误(x: str):
+    存在性判定(
+        x,
+        field_name="管理岗位/专业技术职称/职业技能等级",
+        belong_name="管理岗位/专业技术职称/职业技能等级s"
+    )
+
+def 验证_用工形式_错误(x: str):
+    存在性判定(
+        x,
+        field_name="用工形式",
+        belong_name="用工形式s"
+    )
+
+def 验证_劳动合同类型_错误(x: str):
+    存在性判定(
+        x,
+        field_name="劳动合同类型",
+        belong_name="劳动合同类型s"
+    )
+
+def 验证_全年周平均工作小时数_错误(x: int):
+    值判定(
+        x,
+        field_name="全年周平均工作小时数",
+        min_len=21,
+        max_len=112,
+        max_open=False,
+        min_open=False
+    )
+
+def 验证_是否工会会员_错误(x: str):
+    非空判定(
+        x,
+        field_name="是否工会会员",
+    )
+
+def 验证_全年工资报酬合计_错误(x: int):
+    值判定(
+        x,
+        field_name="全年工资报酬合计",
+        min_len=12000,
+        max_len=5000000,
+        max_open=False,
+        min_open=False
+    )
+
 def 检验(value: str, data_type: str):
     func_map = [
         "固话", 
@@ -227,7 +378,27 @@ def 检验(value: str, data_type: str):
         "单位隶属关系",
         "行业类别代码",
         "企业规模",
-        "登记注册类型"
+        "登记注册类型",
+        "销售_营业_收入",
+        "利润总额",
+        "固定资产折旧",
+        "主营业务税金及附加",
+        "人工成本总计",
+        "福利费用",
+        "保险费用",
+        "职工代码",
+        "性别",
+        "出生年份",
+        "学历",
+        "参加工作年份",
+        "职业",
+        "管理岗位_专业技术职称_职业技能等级",
+        "用工形式",
+        "劳动合同类型",
+        "全年周平均工作小时数",
+        "是否工会会员",
+        "全年工资报酬合计",
+        "基本工资"
     ]
     assert data_type in func_map
 
@@ -255,7 +426,7 @@ def test_手机():
     assert ret['错误'] == ''
 
     ret = 检验("1805177003", "手机")
-    assert ret['错误'] == '手机号码的长度必须大于等于11'
+    assert ret['错误'] == '手机号码的长度必须等于11'
 
 def test_固话():
     ret = 检验("5741769", "固话")
@@ -380,6 +551,158 @@ def test_登记注册类型():
 
     ret = 检验("", "登记注册类型")
     assert ret['错误'] == '登记注册类型必须在登记注册类型s列表中'
+
+def test_销售_营业_收入():
+    ret = 检验(12345, "销售_营业_收入")
+    assert ret['错误'] == ''
+
+    ret = 检验(0, "销售_营业_收入")
+    assert ret['错误'] == '销售（营业）收入必须大于0'
+
+def test_利润总额():
+    ret = 检验(12345, "利润总额")
+    assert ret['错误'] == ''
+
+    ret = 检验(0, "利润总额")
+    assert ret['错误'] == '利润总额必须大于0'
+
+def test_固定资产折旧():
+    ret = 检验(12345, "固定资产折旧")
+    assert ret['错误'] == ''
+
+    ret = 检验(0, "固定资产折旧")
+    assert ret['错误'] == ''
+
+    ret = 检验(-1, "固定资产折旧")
+    assert ret['错误'] == '固定资产折旧必须大于等于0'
+
+def test_主营业务税金及附加():
+    ret = 检验(12345, "主营业务税金及附加")
+    assert ret['错误'] == ''
+
+    ret = 检验(0, "主营业务税金及附加")
+    assert ret['错误'] == ''
+
+    ret = 检验(-2, "主营业务税金及附加")
+    assert ret['错误'] == '主营业务税金及附加必须大于等于0'
+
+def test_人工成本总计():
+    ret = 检验(12345, "人工成本总计")
+    assert ret['错误'] == ''
+
+    ret = 检验(0, "人工成本总计")
+    assert ret['错误'] == '人工成本总计必须大于0'
+
+def test_福利费用():
+    ret = 检验(12345, "福利费用")
+    assert ret['错误'] == ''
+
+    ret = 检验(0, "福利费用")
+    assert ret['错误'] == '福利费用必须大于0'
+
+def test_保险费用():
+    ret = 检验(12345, "保险费用")
+    assert ret['错误'] == ''
+
+    ret = 检验(0, "保险费用")
+    assert ret['错误'] == '保险费用必须大于0'
+
+def test_职工代码():
+    ret = 检验("asdsfsgr", "职工代码")
+    assert ret['错误'] == ''
+
+    ret = 检验("", "职工代码")
+    assert ret['错误'] == '职工代码不可为空'
+
+def test_性别():
+    ret = 检验("男", "性别")
+    assert ret['错误'] == ''
+
+    ret = 检验("", "性别")
+    assert ret['错误'] == '性别必须在性别s列表中'
+
+def test_出生年份():
+    ret = 检验(2006, "出生年份")
+    assert ret['错误'] == ''
+
+    ret = 检验(1955, "出生年份")
+    assert ret['错误'] == '出生年份必须在1956和2006之间'
+
+    ret = 检验(2007, "出生年份")
+    assert ret['错误'] == '出生年份必须在1956和2006之间'
+
+def test_学历():
+    ret = 检验("初中及以下", "学历")
+    assert ret['错误'] == ''
+
+    ret = 检验("", "学历")
+    assert ret['错误'] == '学历必须在学历s列表中'
+
+def test_参加工作年份():
+    ret = 检验(2006, "参加工作年份")
+    assert ret['错误'] == ''
+
+    ret = 检验(1955, "参加工作年份")
+    assert ret['错误'] == '参加工作年份必须在1965和2017之间'
+
+    ret = 检验(2020, "参加工作年份")
+    assert ret['错误'] == '参加工作年份必须在1965和2017之间'
+
+def test_职业():
+    ret = 检验("1060200-企业总经理", "职业")
+    assert ret['错误'] == ''
+
+    ret = 检验("", "职业")
+    assert ret['错误'] == '职业必须在职业s列表中'
+
+def test_管理岗位_专业技术职称_职业技能等级():
+    ret = 检验("中层管理岗（一级部门管理岗）", "管理岗位_专业技术职称_职业技能等级")
+    assert ret['错误'] == ''
+
+    ret = 检验("", "管理岗位_专业技术职称_职业技能等级")
+    assert ret['错误'] == '管理岗位/专业技术职称/职业技能等级必须在管理岗位/专业技术职称/职业技能等级s列表中'
+
+def test_用工形式():
+    ret = 检验("合同制用工", "用工形式")
+    assert ret['错误'] == ''
+
+    ret = 检验("", "用工形式")
+    assert ret['错误'] == '用工形式必须在用工形式s列表中'
+
+def test_劳动合同类型():
+    ret = 检验("固定期限", "劳动合同类型")
+    assert ret['错误'] == ''
+
+    ret = 检验("", "劳动合同类型")
+    assert ret['错误'] == '劳动合同类型必须在劳动合同类型s列表中'
+
+def test_全年周平均工作小时数():
+    ret = 检验(21, "全年周平均工作小时数")
+    assert ret['错误'] == ''
+
+    ret = 检验(5, "全年周平均工作小时数")
+    assert ret['错误'] == '全年周平均工作小时数必须在21和112之间'
+
+    ret = 检验(113, "全年周平均工作小时数")
+    assert ret['错误'] == '全年周平均工作小时数必须在21和112之间'
+
+
+def test_是否工会会员():
+    ret = 检验("是", "是否工会会员")
+    assert ret['错误'] == ''
+
+    ret = 检验("", "是否工会会员")
+    assert ret['错误'] == '是否工会会员不可为空'
+
+def test_全年工资报酬合计():
+    ret = 检验(5000000, "全年工资报酬合计")
+    assert ret['错误'] == ''
+
+    ret = 检验(53, "全年工资报酬合计")
+    assert ret['错误'] == '全年工资报酬合计必须在12000和5000000之间'
+
+    ret = 检验(500000000, "全年工资报酬合计")
+    assert ret['错误'] == '全年工资报酬合计必须在12000和5000000之间'
 
 if __name__ == "__main__":
     pytest.main([__file__])
