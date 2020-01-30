@@ -1,5 +1,5 @@
 from flask import Blueprint, jsonify, request, render_template
-from config import company_col, CURRENT_DIR
+from config import gssi_col, CURRENT_DIR
 from common.ADT_reg import Object, objects, new
 
 try:
@@ -29,7 +29,7 @@ count = 1
 @view.route("/get_company_info", methods=["GET"])
 def get_company_info():
     global count
-    item = company_col.find_one({
+    item = gssi_col.find_one({
         "_id": ObjectId(request.args.get('id'))
     })
     count += 1
@@ -54,11 +54,11 @@ def edit_company_info():
     if flag:
 
         filter = {'统一社会信用代码': data.get('统一社会信用代码')}
-        item = company_col.find_one(filter)
+        item = gssi_col.find_one(filter)
         if item:
-            ret['oper_result'] = company_col.update_one(filter, data).raw
+            ret['oper_result'] = gssi_col.update_one(filter, data).raw
         else:
-            ret['oper_result'] = company_col.insert_one(data).raw
+            ret['oper_result'] = gssi_col.insert_one(data).raw
     ret['message'] = check_ret
     return jsonify(ret)
 

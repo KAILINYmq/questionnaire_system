@@ -1,9 +1,9 @@
 import pymongo
  
 client = pymongo.MongoClient("mongodb://localhost:27017/")
-db = client["test"]
+db = client["questionnaire_system"]
 wfjr_col = db["wfjr"]
-company_col = db["gssi"]
+gssi_col = db["gssi"]
 
 import os
 CURRENT_DIR = os.getcwd()

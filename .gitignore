@@ -4,3 +4,5 @@ codes/backend/common/num.py
 codes/backend/common/nums_len
 codes/.vscode/launch.json
 .vscode
+hello-world/node_modules
+codes/frontend/node_modules
