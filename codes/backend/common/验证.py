@@ -37,11 +37,11 @@ def 等长判定(
             raise Exception(exception_text)
 
     if length_second is not None:
-            if ((len(x) != length_first) & (len(x) != length_second)):
-                exception_text = "{0}的长度必须等于{1}或者{2}".format(
-                    field_name, length_first,length_second
-                )
-                raise Exception(exception_text)
+        if ((len(x) != length_first) & (len(x) != length_second)):
+            exception_text = "{0}的长度必须等于{1}或者{2}".format(
+                field_name, length_first,length_second
+            )
+            raise Exception(exception_text)
 
 def 值判定(
     x: int,
@@ -253,11 +253,12 @@ def 验证_人工成本总计_错误(x: int):
     )
 
 def 验证_福利费用_错误(x: int):
-    值判定(
-        x,
-        field_name="福利费用",
-        min_len=0
-    )
+    if x != None:
+        值判定(
+            x,
+            field_name="福利费用",
+            min_len=0
+        )
 
 def 验证_保险费用_错误(x: int):
     值判定(
