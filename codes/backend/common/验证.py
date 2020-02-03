@@ -70,8 +70,6 @@ def 值判定(
             )
             raise Exception(exception_text)
    
-       
-  
 def 非空判定(
     x: str,
     field_name: str
@@ -124,12 +122,13 @@ def 验证_在岗人数_错误(x: int):
     )
 
 def 验证_劳务派遣人数_错误(x: int):
-    值判定(
-        x,
-        field_name="劳务派遣人数",
-        min_len=0,
-        min_open=False
-    )
+    if x != None:
+        值判定(
+            x,
+            field_name="劳务派遣人数",
+            min_len=0,
+            min_open=False
+        )
 
 def 验证_从业人员工资总额_错误(x: int):
     值判定(
@@ -146,12 +145,13 @@ def 验证_在岗职工工资总额_错误(x: int):
     )
 
 def 验证_劳务派遣人员工资总额_错误(x: int):
-    值判定(
-        x,
-        field_name="劳务派遣人员工资总额",
-        min_len=0,
-        min_open=False
-    )
+    if x != None:
+        值判定(
+            x,
+            field_name="劳务派遣人员工资总额",
+            min_len=0,
+            min_open=False
+        )
 
 def 验证_统一社会信用代码_错误(x: str):
     等长判定(
@@ -260,12 +260,45 @@ def 验证_福利费用_错误(x: int):
             min_len=0
         )
 
+def 验证_教育经费_错误(x: int):
+    if x != None:
+        值判定(
+            x,
+            field_name="教育经费",
+            min_len=0
+        )
+
 def 验证_保险费用_错误(x: int):
-    值判定(
-        x,
-        field_name="保险费用",
-        min_len=0
-    )
+    if x != None:
+        值判定(
+            x,
+            field_name="保险费用",
+            min_len=0
+        )
+
+def 验证_劳动保护费用_错误(x: int):
+    if x != None:
+        值判定(
+            x,
+            field_name="劳动保护费用",
+            min_len=0
+        )
+
+def 验证_住房费用_错误(x: int):
+    if x != None:
+        值判定(
+            x,
+            field_name="住房费用",
+            min_len=0
+        )
+
+def 验证_其他人工成本_错误(x: int):
+    if x != None:
+        值判定(
+            x,
+            field_name="其他人工成本",
+            min_len=0
+        )
 
 def 验证_职工代码_错误(x: str):
     非空判定(
@@ -361,6 +394,37 @@ def 验证_全年工资报酬合计_错误(x: int):
         min_open=False
     )
 
+def 验证_基本工资_错误(x: int):
+    值判定(
+        x,
+        field_name="基本工资（类）",
+        min_len=0
+    )
+
+def 验证_绩效工资_错误(x: int):
+    if x != None:
+        值判定(
+            x,
+            field_name="绩效工资（类）",
+            min_len=0
+        )
+
+def 验证_津补贴_错误(x: int):
+    if x != None:
+        值判定(
+            x,
+            field_name="津补贴（类）",
+            min_len=0
+        )
+
+def 验证_加班加点工资_错误(x: int):
+    if x != None:
+        值判定(
+            x,
+            field_name="加班加点工资",
+            min_len=0
+        )
+
 def 检验(value: str, data_type: str):
     func_map = [
         "固话", 
@@ -386,7 +450,11 @@ def 检验(value: str, data_type: str):
         "主营业务税金及附加",
         "人工成本总计",
         "福利费用",
+        "教育经费",
         "保险费用",
+        "劳动保护费用",
+        "住房费用",
+        "其他人工成本",
         "职工代码",
         "性别",
         "出生年份",
@@ -399,7 +467,10 @@ def 检验(value: str, data_type: str):
         "全年周平均工作小时数",
         "是否工会会员",
         "全年工资报酬合计",
-        "基本工资"
+        "基本工资",
+        "绩效工资",
+        "津补贴",
+        "加班加点工资"
     ]
     assert data_type in func_map
 
@@ -601,12 +672,40 @@ def test_福利费用():
     ret = 检验(0, "福利费用")
     assert ret['错误'] == '福利费用必须大于0'
 
+def test_教育经费():
+    ret = 检验(12345, "教育经费")
+    assert ret['错误'] == ''
+
+    ret = 检验(0, "教育经费")
+    assert ret['错误'] == '教育经费必须大于0'
+
 def test_保险费用():
-    ret = 检验(12345, "保险费用")
+    ret = 检验(125.52, "保险费用")
     assert ret['错误'] == ''
 
     ret = 检验(0, "保险费用")
     assert ret['错误'] == '保险费用必须大于0'
+
+def test_劳动保护费用():
+    ret = 检验(12345, "劳动保护费用")
+    assert ret['错误'] == ''
+
+    ret = 检验(0, "劳动保护费用")
+    assert ret['错误'] == '劳动保护费用必须大于0'
+
+def test_住房费用():
+    ret = 检验(12345, "住房费用")
+    assert ret['错误'] == ''
+
+    ret = 检验(0, "住房费用")
+    assert ret['错误'] == '住房费用必须大于0'
+
+def test_其他人工成本():
+    ret = 检验(12345, "其他人工成本")
+    assert ret['错误'] == ''
+
+    ret = 检验(0, "其他人工成本")
+    assert ret['错误'] == '其他人工成本必须大于0'    
 
 def test_职工代码():
     ret = 检验("asdsfsgr", "职工代码")
@@ -704,6 +803,34 @@ def test_全年工资报酬合计():
 
     ret = 检验(500000000, "全年工资报酬合计")
     assert ret['错误'] == '全年工资报酬合计必须在12000和5000000之间'
+
+def test_基本工资():
+    ret = 检验(12345, "基本工资")
+    assert ret['错误'] == ''
+
+    ret = 检验(0, "基本工资")
+    assert ret['错误'] == '基本工资（类）必须大于0'
+
+def test_绩效工资():
+    ret = 检验(12345, "绩效工资")
+    assert ret['错误'] == ''
+
+    ret = 检验(0, "绩效工资")
+    assert ret['错误'] == '绩效工资（类）必须大于0'    
+
+def test_津补贴():
+    ret = 检验(12345, "津补贴")
+    assert ret['错误'] == ''
+
+    ret = 检验(0, "津补贴")
+    assert ret['错误'] == '津补贴（类）必须大于0' 
+
+def test_加班加点工资():
+    ret = 检验(12345, "加班加点工资")
+    assert ret['错误'] == ''
+
+    ret = 检验(0, "加班加点工资")
+    assert ret['错误'] == '加班加点工资必须大于0' 
 
 if __name__ == "__main__":
     pytest.main([__file__])

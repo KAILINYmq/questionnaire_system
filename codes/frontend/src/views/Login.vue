@@ -19,77 +19,77 @@
   </div>
 </template>
 <script>
-import axios from "axios";
+import axios from 'axios'
 
 export default {
-  data() {
+  data () {
     return {
       visible: false,
-      message: "",
+      message: '',
 
       ruleForm: {
-        login_id: "123123123123123123",
-        password: "123456789"
+        login_id: '123123123123123123',
+        password: '123456789'
       },
       rules: {
         login_id: [
           {
             required: true,
-            message: "请输入统一社会信用代码",
-            trigger: "blur"
+            message: '请输入统一社会信用代码',
+            trigger: 'blur'
           },
-          { min: 18, max: 18, message: "长度为 18 个字符", trigger: "blur" }
+          { min: 18, max: 18, message: '长度为 18 个字符', trigger: 'blur' }
         ],
         password: [
           {
             required: true,
-            message: "请输入密码",
-            trigger: "blur"
+            message: '请输入密码',
+            trigger: 'blur'
           },
-          { min: 8, max: 16, message: "长度为 8~16 个字符", trigger: "blur" }
+          { min: 8, max: 16, message: '长度为 8~16 个字符', trigger: 'blur' }
         ]
       }
-    };
+    }
   },
   methods: {
-    submitForm(formName) {
+    submitForm (formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
           const loading = this.$loading({
             lock: true,
-            text: "加载中",
-            spinner: "el-icon-loading",
-            background: "rgba(0, 0, 0, 0.7)"
-          });
+            text: '加载中',
+            spinner: 'el-icon-loading',
+            background: 'rgba(0, 0, 0, 0.7)'
+          })
 
           axios
-            .post("http://127.0.0.1/api/login", this.ruleForm)
+            .post('http://127.0.0.1/api/login', this.ruleForm)
             .then(response => {
-              console.log(response);
-              loading.close();
-              const data = response.data;
+              console.log(response)
+              loading.close()
+              const data = response.data
               if (data.status === 0) {
                 // 保存登录凭证
                 // 跳转到指定页面
               } else {
-                this.visible = true;
-                this.message = response.data.msg;
+                this.visible = true
+                this.message = response.data.msg
               }
             })
-            .catch(function(error) {
-              console.log(error);
-            });
+            .catch(function (error) {
+              console.log(error)
+            })
         } else {
-          console.log("error submit!!");
-          return false;
+          console.log('error submit!!')
+          return false
         }
-      });
+      })
     },
-    resetForm(formName) {
-      this.$refs[formName].resetFields();
+    resetForm (formName) {
+      this.$refs[formName].resetFields()
     }
   }
-};
+}
 </script>
 
 <style>
