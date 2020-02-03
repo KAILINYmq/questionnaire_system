@@ -2,3 +2,4 @@ pymongo
 flask
 requests
 pytest
+flask_cors
