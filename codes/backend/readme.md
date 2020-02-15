@@ -1,3 +1,0 @@
-flask
-mongo
-vue
