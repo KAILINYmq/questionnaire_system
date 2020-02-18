@@ -1,0 +1,31 @@
+@startuml 页面划分
+(登录) -|> login
+
+(管理员后台管理页面) -> (查看已填写未填写)
+(查看已填写未填写) -|> get_full_state
+(管理员后台管理页面) ..> (查看公司列表页面)
+
+(查看公司列表页面) -> (查看公司列表)
+(查看公司列表) -|> get_company_list
+(查看公司列表页面) ..> (查看公司详细信息页面)
+(查看公司详细信息页面) -down-|> get_company_info
+(查看公司详细信息页面) -> (删除公司)
+(查看公司列表页面) -> (删除公司)
+(删除公司) -down-|> del_company
+(查看公司列表页面) ..> (增加公司页面)
+(查看公司列表页面) ..> (编辑公司页面)
+(增加公司页面) - (编辑公司页面)
+
+(增加公司页面) -down-|> edit_company_info
+(编辑公司页面) -down-|> edit_company_info
+
+(提交前台页面) -down-> (下载样表)
+(下载样表) -down-|> get_sample_table
+(提交前台页面) -down-> (上传样表)
+(上传样表) -down-|> upload_sample_table
+(提交前台页面) -down-> (查看本公司情况)
+(查看本公司情况) -down-|> get_self_company_info
+
+
+
+@enduml
