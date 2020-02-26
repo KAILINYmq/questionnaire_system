@@ -43,23 +43,13 @@ export default {
         uploadFile(item) {
             let fileObj = item.file
             const form = new FormData() // FormData 对象
-            form.append('login_token', window.sessionStorage.getItem('ACCESS_TOKEN'))
+           // form.append('login_token', window.sessionStorage.getItem('ACCESS_TOKEN'))
             form.append('file', fileObj) // 文件对象  'file'是后台接收的参数名
             let a =[{login: window.sessionStorage.getItem('ACCESS_TOKEN'), file: fileObj}];
-            uploadSampleTable(a).then(response => {
+            uploadSampleTable(form).then(response => {
                 console.log(response.data.msg);
             });
-            // $.ajax({
-            //     url: "http://121.43.189.184:8000/test/upload_sample_table",
-            //     data: form,
-            //     type: "POST",
-            //     contentType: "multipart/form-data",
-            //     processData: false, //告诉jquery不要对form进行处理
-            //     contentType: false, //指定为false才能形成正确的Content-Type
-            //     success: function (res) {}
-            // }).then(response => {
-            //     console.log("aaaaaaa"+response.data.msg);
-            // })
+           
         },
 
         // **************上传excel文件结束***************************
@@ -68,7 +58,7 @@ export default {
             getSampleTable();
         },
         getOldSampleTable() {
-            getOldSampleTable();
+           getOldSampleTable()
         },
         uploadSampleTable() {
             uploadSampleTable();

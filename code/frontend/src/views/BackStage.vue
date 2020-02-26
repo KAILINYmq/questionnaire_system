@@ -17,7 +17,7 @@
                                     <el-divider content-position="center">
                                         <h3>公司详细信息</h3>
                                     </el-divider>
-                                    <el-form label-position="right" :model="editPlanForm" :rules="rules" label-width="80px" ref="companyInfoForm">
+                                    <el-form label-position="right" :model="'editPlanForm'" label-width="80px" ref="companyInfoForm">
                                         <el-row>
                                             <el-col span="11">
                                                 <el-form-item label="统一社会信用代码" prop="统一社会信用代码">
@@ -95,7 +95,8 @@
                                     <h3>公司详细信息</h3>
                                 </el-divider>
                                 <div class="company-info-table">
-                                    <el-table v-loading="loading" :data="CompanyBriefTable.filter(data => !search || data.法人单位名称.toLowerCase().includes(search.toLowerCase()))" :header-cell-style="{background:'#eef1f6',color:'#606266'}" style="width: 100%" max-height="500px" border="1px" fit highlight-current-row align="center" stripe>
+                                    <el-table v-loading="loading" :data="CompanyBriefTable.filter(data => !search || data.法人单位名称.toLowerCase().includes(search.toLowerCase()))" :header-cell-style="{background:'#eef1f6',color:'#606266'}" style="width: 100%" max-height="500px" border fit highlight-current-row align="center" stripe>
+                                        <el-table-column type="index" label="#"></el-table-column>
                                         <el-table-column prop="统一社会信用代码" label="统一社会信用代码" width="200">
                                         </el-table-column>
                                         <el-table-column prop="组织机构代码" label="组织机构代码" width="100">
@@ -124,25 +125,17 @@
                                             </template>
                                             <template slot-scope="scope">
                                                 <el-button size="mini" @click="handleView(scope.$index, scope.row)">查看</el-button>
-                                                <el-button size="mini" type="danger"  @click="delCompany(scope.$index, scope.row)">删除</el-button>
+                                                <el-button size="mini" type="danger" @click="delCompany(scope.$index, scope.row)">删除</el-button>
                                             </template>
                                         </el-table-column>
                                     </el-table>
                                     <div class="block">
-                                        <el-pagination background
-                                         @size-change="handleSizeChange" 
-                                         @current-change="handleCurrentChange" 
-                                         :current-page.sync="currentPage" 
-                                         :page-size="pagesize"
-                                         :page-count="page_count"
-                                         
-                                         layout="total,jumper,prev, pager, next,sizes" 
-                                         :total="files_count">
+                                        <el-pagination v-if="pageshow" background @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="currentPage" :page-size.sync="pagesize" :page-sizes="[5, 10, 20, 50, 100]" layout="total,jumper,prev, pager, next,sizes" :total="files_count">
                                         </el-pagination>
                                     </div>
 
                                 </div>
-                                <el-dialog :visible.sync="testVisible" @closed="resetForm('companyInfoForm')">
+                                <el-dialog :visible.sync="testVisible">
                                     {{companyInfo}}
                                 </el-dialog>
                             </div>
@@ -153,9 +146,9 @@
                                     <h3>公司新增</h3>
                                 </el-divider>
                                 <div>
-                                    <el-input placeholder="请输入统一信贷码" v-model="input" clearable>
+                                    <el-input placeholder="请输入统一信贷码" v-model="统一信贷码" clearable>
                                     </el-input>
-                                    <el-input placeholder="请输入联系方式" v-model="input" clearable>
+                                    <el-input placeholder="请输入联系方式" v-model="联系方式" clearable>
                                     </el-input>
                                     <el-button type="primary">增加</el-button>
                                 </div>
@@ -182,14 +175,23 @@ export default {
         return {
             // 分页
             loading: true,
+            // 当前页
             currentPage: 1,
-            pagesize: 10,
-            files_count: 5,
+            // 每页大小
+            pagesize: 5,
+            files_count: 10,
+            pageshow: true,
             // page_count: 0,
             testVisible: false,
             companyInfo: '',
-
             search: '',
+            统一信贷码: '',
+            联系方式: '',
+
+            totalPage: 0,
+            lastPageSize: 0,
+            totalFiles: 0,
+
             addCompany: '',
             CompanyBriefTable: [],
             companyInfoVisible: false,
@@ -213,40 +215,67 @@ export default {
     created() {
         // zhege
         this.hadleGetFilesListApi();
+        // this.files_count = this.totalCount()
     },
     methods: {
-        // ***********************分页开始*******************
-        handleSizeChange(size) {
-            this.pagesize = size;
-            this.hadleGetFilesListApi();
-
+        handleSizeChange(val) {
+            this.pagesize = val; //cur_page 当前页
+            this.CompanyBriefTable.length = 0;
+            this.hadleGetFilesListApi(); //获取数据
+            this.pageshow = false; //让分页隐藏
+            this.$nextTick(() => { //重新渲染分页
+                this.pageshow = true;
+            });
+            console.log(`每页 ${val} 条`);
         },
-        // 控制页面的切换
-        handleCurrentChange(currentPage) {
-            this.currentPage = currentPage;
-            // console.log(currentPage)
-            this.hadleGetFilesListApi();
+        handleCurrentChange(val) {
+            this.currentPage = val; //cur_page 当前页
+            this.CompanyBriefTable.length = 0;
+            this.hadleGetFilesListApi(); //获取数据
+            this.pageshow = false; //让分页隐藏
+            this.$nextTick(() => { //重新渲染分页
+                this.pageshow = true;
+            });
+            console.log(`当前页: ${val}`);
         },
         //对所有数据进行分页处理 发送请求
         hadleGetFilesListApi() {
             var a = new Object();
             a.login_token = window.sessionStorage.getItem('ACCESS_TOKEN');
             // 返回多少条数据
-            a.page_size = this.pagesize.toString();
+            a.page_size = this.pagesize;
             // 第几页
-            a.page_no = this.currentPage.toString();
-            getCompanyList(a)
-                .then(response => {
-                    console.log(response.data.msg);
+            a.page_no = this.currentPage;
+            getCompanyList(a).then(response => {
                     // 共几页
                     this.page_count = response.data.page_num;
                     response.data.msg.forEach(a => {
-                        
                         this.CompanyBriefTable.push(JSON.parse(a))
                     })
                     this.loading = false;
                 })
                 .catch({});
+        },
+        totalCount() {
+            var a = new Object();
+            a.login_token = window.sessionStorage.getItem('ACCESS_TOKEN');
+            // 返回多少条数据
+            a.page_size = this.pagesize;
+            // 第几页
+            a.page_no = this.currentPage;
+            getCompanyList(a)
+                .then(response => {
+                    // 共几页
+                    this.totalPage = response.data.page_num;
+                    // 最后一页多少
+                    a.page_no = this.totalPage;
+                    this.totalFiles = response.data.msg.length
+                    getCompanyList(a).then(res => {
+                        this.lastPageSize = res.data.msg.length;
+                    })
+                    this.totalFiles = this.totalFiles * (this.totalPage - 1) + this.lastPageSize;
+                })
+            return this.totalFiles;
         },
         // ***********************分页结束*******************
 
@@ -269,17 +298,17 @@ export default {
             this.companyInfoForm.法定代表人 = row.法定代表人;
             this.companyInfoForm.联系方式 = row.联系方式;
             this.companyInfoForm.企业规模 = row.企业规模;
-            // this.companyInfoVisible = true;
+            this.companyInfoVisible = true;
 
             // 方式二，调用后端接口
-            let a = new Object();
-            a.login_token = window.sessionStorage.getItem('ACCESS_TOKEN');
-            a.id = row._id.$oid;
-            console.log(JSON.stringify(a))
-            getCompanyInfo(a).then(response => {
-                this.companyInfo = JSON.stringify(JSON.parse(response.data.msg));
-            })
-            this.testVisible = true;
+            // let a = new Object();
+            // a.login_token = window.sessionStorage.getItem('ACCESS_TOKEN');
+            // a.id = row._id.$oid;
+            // console.log(JSON.stringify(a))
+            // getCompanyInfo(a).then(response => {
+            //     this.companyInfo = JSON.stringify(JSON.parse(response.data.msg));
+            // })
+            // this.testVisible = true;
 
         },
         deleteRow(index, rows) {
@@ -294,16 +323,13 @@ export default {
             delCompany(a).then(response => {
                 this.companyInfo = JSON.stringify(JSON.parse(response.data.msg));
             })
+            this.totalCount();
+            console.log("shanchu")
         },
         resetForm(formName) {
             this.$refs[formName].resetFields();
-        },
-        handleSizeChange(val) {
-            console.log(`每页 ${val} 条`);
-        },
-        handleCurrentChange(val) {
-            console.log(`当前页: ${val}`);
         }
+
     }
 }
 </script>

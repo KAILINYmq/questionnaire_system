@@ -73,10 +73,8 @@ export default {
 
                     axios.post('http://121.43.189.184:8000/api/login', this.ruleForm)
                         .then(response => {
-                            console.log(response)
                             loading.close()
                             const data = response.data
-                            alert(JSON.stringify(data));
                             if (data.msg === "登录成功") {
                                 // 保存登录凭证
                                 window.sessionStorage.setItem('ACCESS_TOKEN', response.data.login_token)

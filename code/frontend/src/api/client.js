@@ -14,6 +14,6 @@ export function getOldSampleTable() {
 }
 export function uploadSampleTable(form) {
     return axios.post(
-        'http://121.43.189.184:8000/test/upload_sample_table', { formData: form }
+        'http://121.43.189.184:8000/test/upload_sample_table', { formData: { login_token: window.sessionStorage.getItem('ACCESS_TOKEN'), file: form } }
     )
 }
