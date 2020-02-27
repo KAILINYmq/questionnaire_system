@@ -6,8 +6,8 @@
     <el-button type="primary" @click="getSampleTable">下载样例</el-button>
 
     <el-button type="info" @click="getOldSampleTable">下载历史</el-button>
-    <br/>
-    <br/>
+    <br />
+    <br />
     <el-upload class="inline-block" :multiple='false' :auto-upload='true' list-type='text' :show-file-list='true' :before-upload="beforeUpload" :drag='true' action='' :limit="1" :on-exceed="handleExceed" :http-request="uploadFile">
         <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
         <div class="el-upload__tip" slot="tip">一次只能上传一个文件，仅限text格式，单文件不超过1MB</div>
@@ -42,14 +42,28 @@ export default {
         // 上传文件
         uploadFile(item) {
             let fileObj = item.file
-            const form = new FormData() // FormData 对象
-           // form.append('login_token', window.sessionStorage.getItem('ACCESS_TOKEN'))
-            form.append('file', fileObj) // 文件对象  'file'是后台接收的参数名
-            let a =[{login: window.sessionStorage.getItem('ACCESS_TOKEN'), file: fileObj}];
-            uploadSampleTable(form).then(response => {
-                console.log(response.data.msg);
-            });
-           
+            const formData = new FormData() // FormData 对象
+            formData.append('login_token', window.sessionStorage.getItem('ACCESS_TOKEN'))
+            formData.append('file', fileObj) // 文件对象  'file'是后台接收的参数名
+
+            // uploadSampleTable(form).then(response => {
+            //     console.log(response.data.msg);
+            // });
+            axios({
+                    method: 'post',
+                    url: `http://121.43.189.184:8000/test/upload_sample_table`,
+                    data: formData,
+                    headers: {
+                        'Content-Type': 'multipart/form-data;charset=utf-8', //'application/json;charset=UTF-8'
+                        'login_token': window.sessionStorage.getItem('ACCESS_TOKEN')
+                    }
+                }).then(function (response) {
+                    return response;
+                })
+                .catch(function (error) {
+                    return error;
+                })
+
         },
 
         // **************上传excel文件结束***************************
@@ -58,7 +72,7 @@ export default {
             getSampleTable();
         },
         getOldSampleTable() {
-           getOldSampleTable()
+            getOldSampleTable()
         },
         uploadSampleTable() {
             uploadSampleTable();
