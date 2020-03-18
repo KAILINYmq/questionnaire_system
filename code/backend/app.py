@@ -19,4 +19,4 @@ app.jinja_env.comment_end_string = '#)'  # 修改注释结束符号
 
 if __name__ == "__main__":
     CORS(app, supports_credentials=True)
-    app.run(debug=True, port=8000)
+    app.run("0.0.0.0", debug=True, port=8888)

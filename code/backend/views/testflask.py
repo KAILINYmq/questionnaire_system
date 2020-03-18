@@ -233,7 +233,8 @@ def excel_data_save(excel1_data_dict, jwt_name):
     try:
         print("保存数据:------------")
         pprint.pprint(excel1_data_dict)
-        wfjr_col.update(
+        
+        wfjr_col.replace_one(
             {"统一社会信用代码": jwt_name},
             {
                 "统一社会信用代码": str(int(excel1_data_dict['01 统一社会信用代码：'])),
@@ -265,7 +266,9 @@ def excel_data_save(excel1_data_dict, jwt_name):
                 "劳动保护费用": str(excel1_data_dict['劳动保护费用']),
                 "住房费用": str(excel1_data_dict['住房费用']),
                 "其他人工成本": str(excel1_data_dict['其他人工成本']),
-            })
+            }, 
+            upsert=True
+        )
     except Exception as e:
         return False
 
