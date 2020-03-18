@@ -179,7 +179,7 @@ export default {
             currentPage: 1,
             // 每页大小
             pagesize: 5,
-            files_count: 10,
+            files_count: 0,
             pageshow: true,
             // page_count: 0,
             testVisible: false,
@@ -252,6 +252,7 @@ export default {
                     response.data.msg.forEach(a => {
                         this.CompanyBriefTable.push(JSON.parse(a))
                     })
+                    this.files_count = response.data.msg.length;
                     this.loading = false;
                 })
                 .catch({});
