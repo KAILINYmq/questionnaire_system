@@ -295,7 +295,7 @@ export default {
             this.companyInfoForm.单位隶属关系 = row.单位隶属关系;
             this.companyInfoForm.行业类别代码 = row.行业类别代码;
             this.companyInfoForm.登记注册类型 = row.登记注册类型;
-            this.companyInfoForm.法定代表人 = row.法定代表人;
+            this.companyInfoForm.法定代表人 = row['法定代表人 （单位负责人）'];
             this.companyInfoForm.联系方式 = row.联系方式;
             this.companyInfoForm.企业规模 = row.企业规模;
             this.companyInfoVisible = true;
