@@ -3,5 +3,5 @@ requests
 pytest
 flask-cors==3.0.8
 pymongo==3.10.1
-flask-login-0.5.0
-pyjwt-1.7.1
+flask-login==0.5.0
+pyjwt==1.7.1
