@@ -12,3 +12,9 @@ export function getOldSampleTable() {
     const url = 'http://121.43.189.184:8000/test/get_old_sample_table?login_token=' + window.sessionStorage.getItem('ACCESS_TOKEN');
     window.open(url);
 }
+
+export function getCompanyInfo(obj) {
+    return axios.post(
+        'http://121.43.189.184:8000/test/get_company_info', obj
+    )
+}

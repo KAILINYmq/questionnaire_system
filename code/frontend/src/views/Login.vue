@@ -75,6 +75,7 @@ export default {
                         .then(response => {
                             loading.close()
                             const data = response.data
+                            alert(data.msg)
                             if (data.msg === "登录成功") {
                                 // 保存登录凭证
                                 window.sessionStorage.setItem('ACCESS_TOKEN', response.data.login_token)
@@ -86,6 +87,7 @@ export default {
                                 window.sessionStorage.setItem('ACCESS_TOKEN', response.data.login_token)
                                 this.$router.push({
                                     path: '/back'
+                                    // path: '/client'
                                 })
                             } else {
                                 this.visible = true

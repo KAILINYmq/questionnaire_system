@@ -5,7 +5,7 @@
         <el-header>
             <h3>后台管理</h3>
         </el-header>
-        <el-container>
+        
             <!-- 主面板----公司详细信息以及该公司的删除和增加 -->
             <el-main>
                 <div class="main-div">
@@ -19,72 +19,73 @@
                                     </el-divider>
                                     <el-form label-position="right" :model="'editPlanForm'" label-width="80px" ref="companyInfoForm">
                                         <el-row>
-                                            <el-col span="11">
+                                            <el-col :span="20">
+                                                <el-form-item label="法人单位名称" prop="法人单位名称">
+                                                    <el-input :disabled="true" v-model="companyInfoForm.法人单位名称"></el-input>
+                                                </el-form-item>
+                                            </el-col>
+                                            <!-- <el-col :span="12">
+                                                <el-form-item label="法定代表人" prop="法定代表人">
+                                                    <el-input :disabled="true" v-model="companyInfoForm.法定代表人"></el-input>
+                                                </el-form-item>
+                                            </el-col> -->
+                                        </el-row>
+                                        <el-row>
+                                            <el-col :span="12">
                                                 <el-form-item label="统一社会信用代码" prop="统一社会信用代码">
                                                     <el-input :disabled="true" v-model="companyInfoForm.统一社会信用代码"></el-input>
                                                 </el-form-item>
                                             </el-col>
-                                            <el-col span="11">
+                                            <el-col :span="12">
                                                 <el-form-item label="计划类型" prop="组织机构代码">
                                                     <el-input :disabled="true" v-model="companyInfoForm.组织机构代码"></el-input>
                                                 </el-form-item>
                                             </el-col>
                                         </el-row>
+                                        
                                         <el-row>
-                                            <el-col span="11">
-                                                <el-form-item label="法人单位名称" prop="法人单位名称">
-                                                    <el-input :disabled="true" v-model="companyInfoForm.法人单位名称"></el-input>
-                                                </el-form-item>
-                                            </el-col>
-                                            <el-col span="11">
-                                                <el-form-item label="法定代表人" prop="法定代表人">
-                                                    <el-input :disabled="true" v-model="companyInfoForm.法定代表人"></el-input>
-                                                </el-form-item>
-                                            </el-col>
-                                        </el-row>
-                                        <el-row>
-                                            <el-col span="11">
+                                            <el-col :span="12">
                                                 <el-form-item label="联系方式" prop="联系方式">
                                                     <el-input :disabled="true" v-model="companyInfoForm.联系方式"></el-input>
                                                 </el-form-item>
                                             </el-col>
-                                            <el-col span="11">
+                                            <el-col :span="12">
                                                 <el-form-item label="企业所在地行政区划代码" prop="企业所在地行政区划代码">
                                                     <el-input :disabled="true" v-model="companyInfoForm.企业所在地行政区划代码"></el-input>
                                                 </el-form-item>
                                             </el-col>
                                         </el-row>
                                         <el-row>
-                                            <el-col span="11">
+                                            <el-col :span="12">
                                                 <el-form-item label="单位隶属关系" prop="单位隶属关系">
                                                     <el-input :disabled="true" v-model="companyInfoForm.单位隶属关系"></el-input>
                                                 </el-form-item>
                                             </el-col>
-                                            <el-col span="11">
+                                            <el-col :span="12">
                                                 <el-form-item label="行业类别代码" prop="行业类别代码">
                                                     <el-input :disabled="true" v-model="companyInfoForm.行业类别代码"></el-input>
                                                 </el-form-item>
                                             </el-col>
                                         </el-row>
                                         <el-row>
-                                            <el-col span="11">
+                                            <el-col :span="12">
                                                 <el-form-item label="企业规模" prop="企业规模">
                                                     <el-input :disabled="true" v-model="companyInfoForm.企业规模"></el-input>
                                                 </el-form-item>
                                             </el-col>
-                                            <el-col span="11">
+                                            <el-col :span="12">
                                                 <el-form-item label="登记注册类型" prop="登记注册类型">
                                                     <el-input :disabled="true" v-model="companyInfoForm.登记注册类型"></el-input>
                                                 </el-form-item>
                                             </el-col>
                                         </el-row>
                                         <el-row>
-                                            <el-col span="11">
-                                                <el-form-item label="从业人员数量信息" prop="从业人员数量信息">
-                                                    <el-input :disabled="true" v-model="companyInfoForm.从业人员数量信息"></el-input>
+                                            <el-col :span="12">
+                                                <el-form-item label="企业从业人员平均人数" prop="企业从业人员平均人数">
+                                                    <el-input :disabled="true" v-model="companyInfoForm.企业从业人员平均人数"></el-input>
                                                 </el-form-item>
                                             </el-col>
-                                            <el-col span="11"></el-col>
+                                            <el-col :span="12"></el-col>
                                         </el-row>
                                     </el-form>
                                     <div slot="footer" class="dialog-footer">
@@ -103,8 +104,8 @@
                                         </el-table-column>
                                         <el-table-column prop="法人单位名称" label="法人单位名称" width="200">
                                         </el-table-column>
-                                        <el-table-column prop="法定代表人" label="法定代表人 （单位负责人）" width="100">
-                                        </el-table-column>
+                                        <!-- <el-table-column prop="法定代表人" label="法定代表人" width="100">
+                                        </el-table-column> -->
                                         <el-table-column prop="联系方式.固话" label="联系方式" width="200">
                                         </el-table-column>
                                         <el-table-column prop="企业所在地行政区划代码" label="企业所在地行政区划代码" width="100">
@@ -117,7 +118,7 @@
                                         </el-table-column>
                                         <el-table-column prop="登记注册类型" label="登记注册类型" width="100">
                                         </el-table-column>
-                                        <el-table-column prop="从业人员数量信息" label="从业人员数量信息" width="200">
+                                        <el-table-column prop="企业从业人员平均人数" label="企业从业人员平均人数" width="200">
                                         </el-table-column>
                                         <el-table-column fixed="right" width="150px">
                                             <template slot="header">
@@ -146,18 +147,30 @@
                                     <h3>公司新增</h3>
                                 </el-divider>
                                 <div>
-                                    <el-input placeholder="请输入统一信贷码" v-model="统一信贷码" clearable>
-                                    </el-input>
-                                    <el-input placeholder="请输入联系方式" v-model="联系方式" clearable>
-                                    </el-input>
-                                    <el-button type="primary">增加</el-button>
+                                    <el-form label-width="80px" :model="addCompanyForm">
+                                        <el-form-item label="统一社会信用码">
+                                            <el-input placeholder="请输入统一信贷码" v-model="addCompanyForm.username" clearable>
+                                            </el-input>
+                                        </el-form-item>
+                                        <el-form-item label="联系方式">
+                                            <el-input placeholder="请输入联系方式" v-model="addCompanyForm.mobile" clearable>
+                                            </el-input>
+                                        </el-form-item>
+                                        <el-form-item label="密码">
+                                            <el-input placeholder="请输入密码" v-model="addCompanyForm.password" show-password></el-input>
+                                        </el-form-item>
+                                        <el-form-item>
+                                            <el-button type="primary" @click="addCompanyUser" >增加</el-button>
+                                        </el-form-item>
+                                    </el-form>
+
                                 </div>
                             </div>
                         </el-col>
                     </el-row>
                 </div>
             </el-main>
-        </el-container>
+        
     </el-container>
 
 </div>
@@ -168,7 +181,8 @@ import axios from 'axios'
 import {
     getCompanyList,
     getCompanyInfo,
-    delCompany
+    delCompany,
+    getNewUser
 } from "@/api/backstage"; //获取数据的接口
 export default {
     data() {
@@ -185,14 +199,17 @@ export default {
             testVisible: false,
             companyInfo: '',
             search: '',
-            统一信贷码: '',
-            联系方式: '',
 
             totalPage: 0,
             lastPageSize: 0,
             totalFiles: 0,
 
-            addCompany: '',
+            addCompanyForm: {
+                login_token: '',
+                username: '',
+                mobile: '',
+                password: ''
+            },
             CompanyBriefTable: [],
             companyInfoVisible: false,
             addCompanyTable: [],
@@ -201,23 +218,35 @@ export default {
                 统一社会信用代码: '',
                 组织机构代码: '',
                 法人单位名称: '',
-                法定代表人: '',
+                // 法定代表人: '',
                 联系方式: '',
                 企业所在地行政区划代码: '',
                 单位隶属关系: '',
                 行业类别代码: '',
                 企业规模: '',
                 登记注册类型: '',
-                从业人员数量信息: ''
+                企业从业人员平均人数: ''
             },
         }
     },
     created() {
         // zhege
         this.hadleGetFilesListApi();
-        // this.files_count = this.totalCount()
+        
     },
     methods: {
+        // 新增公司
+        addCompanyUser() {
+            this.addCompanyForm.login_token = window.sessionStorage.getItem('ACCESS_TOKEN');
+            // alert(JSON.stringify(this.addCompanyForm))
+            getNewUser(this.addCompanyForm).then(res => {
+                if (res.data.status === 0) {
+                    alert(res.data.msg)
+                }else {
+                    this.addCompanyForm = '';
+                }
+            })
+        },
         handleSizeChange(val) {
             this.pagesize = val; //cur_page 当前页
             this.CompanyBriefTable.length = 0;
@@ -250,6 +279,7 @@ export default {
                     // 共几页
                     this.page_count = response.data.page_num;
                     response.data.msg.forEach(a => {
+                        this.files_count = response.data.sum;
                         this.CompanyBriefTable.push(JSON.parse(a))
                     })
                     this.files_count = response.data.msg.length;
@@ -257,27 +287,7 @@ export default {
                 })
                 .catch({});
         },
-        totalCount() {
-            var a = new Object();
-            a.login_token = window.sessionStorage.getItem('ACCESS_TOKEN');
-            // 返回多少条数据
-            a.page_size = this.pagesize;
-            // 第几页
-            a.page_no = this.currentPage;
-            getCompanyList(a)
-                .then(response => {
-                    // 共几页
-                    this.totalPage = response.data.page_num;
-                    // 最后一页多少
-                    a.page_no = this.totalPage;
-                    this.totalFiles = response.data.msg.length
-                    getCompanyList(a).then(res => {
-                        this.lastPageSize = res.data.msg.length;
-                    })
-                    this.totalFiles = this.totalFiles * (this.totalPage - 1) + this.lastPageSize;
-                })
-            return this.totalFiles;
-        },
+
         // ***********************分页结束*******************
 
         handleEdit: function (index, row) {
@@ -288,16 +298,23 @@ export default {
         },
         handleView(index, row) {
             // 方式一，查看列表信息
+            console.log(row._id.$oid)
+            console.log(JSON.stringify(row))
             this.companyInfoForm.企业所在地行政区划代码 = row.企业所在地行政区划代码;
             this.companyInfoForm.统一社会信用代码 = row.统一社会信用代码;
-            this.companyInfoForm.从业人员数量信息 = row.从业人员数量信息;
+            this.companyInfoForm.企业从业人员平均人数 = row.企业从业人员平均人数;
             this.companyInfoForm.组织机构代码 = row.组织机构代码;
             this.companyInfoForm.法人单位名称 = row.法人单位名称;
             this.companyInfoForm.单位隶属关系 = row.单位隶属关系;
             this.companyInfoForm.行业类别代码 = row.行业类别代码;
             this.companyInfoForm.登记注册类型 = row.登记注册类型;
+<<<<<<< HEAD
+            // this.companyInfoForm.法定代表人 = row.法定代表人;
+            this.companyInfoForm.联系方式 = row.联系方式.手机;
+=======
             this.companyInfoForm.法定代表人 = row['法定代表人 （单位负责人）'];
             this.companyInfoForm.联系方式 = row.联系方式;
+>>>>>>> 9ce5186fc96061c187cdd6616b90173989d7e13b
             this.companyInfoForm.企业规模 = row.企业规模;
             this.companyInfoVisible = true;
 
@@ -324,7 +341,8 @@ export default {
             delCompany(a).then(response => {
                 this.companyInfo = JSON.stringify(JSON.parse(response.data.msg));
             })
-            this.totalCount();
+            this.CompanyBriefTable.length = 0;
+            this.hadleGetFilesListApi()
             console.log("shanchu")
         },
         resetForm(formName) {

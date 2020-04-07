@@ -16,3 +16,9 @@ export function delCompany(obj) {
         'http://121.43.189.184:8000/test/del_company', obj
     )
 }
+
+export function getNewUser(obj) {
+    return axios.post(
+        'http://121.43.189.184:8000/test/get_new_users', obj
+    )
+}
