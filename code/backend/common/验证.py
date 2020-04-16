@@ -10,7 +10,7 @@ def 长度判定(
     max_open = True,
     min_open = True,
 ):
-    x = str(int(x))
+    x = float_to_str(x)
     if max_len is not None:
         if ((not len(x) < max_len) if max_open else (not len(x) <= max_len)):
             exception_text = "{0}的长度必须小于{2}{1}".format(
@@ -30,7 +30,7 @@ def 等长判定(
     length_first: int,
     length_second: int = None
 ):
-    x = str(int(x))
+    x = float_to_str(x)
     if length_second is None:
         if ((not len(x) == length_first)):
             exception_text = "{0}的长度必须等于{1}".format(
@@ -832,6 +832,12 @@ def test_加班加点工资():
 
     ret = 检验(0, "加班加点工资")
     assert ret['错误'] == '加班加点工资必须大于0' 
+
+def float_to_str(x):
+    if isinstance(x, float):
+        return "%.0f"%x
+    else:
+        return x
 
 if __name__ == "__main__":
     pytest.main([__file__])

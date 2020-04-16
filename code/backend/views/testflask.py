@@ -7,6 +7,8 @@ from bson import json_util
 from .JWT_token import verify_jwt
 import xlrd, os, datetime, math, pprint
 import common.验证
+from common.验证 import float_to_str
+
 
 try:
     objects = Object.read_from(CURRENT_DIR + '/common/ADT.js')
@@ -272,13 +274,13 @@ def excel_data_save(excel1_data_dict, excel2_data_dict, jwt_name):
         wfjr_col.replace_one(
             {"统一社会信用代码": jwt_name},
             {
-                "统一社会信用代码": str(int(excel1_data_dict['01 统一社会信用代码：'])),
-                "组织机构代码": str(excel1_data_dict['组织机构代码：']),
-                "法人单位名称": str(excel1_data_dict['02 法人单位名称：']),
-                "法定代表人 （单位负责人）": str(excel1_data_dict['03 法定代表人 （单位负责人）：']),
+                "统一社会信用代码": float_to_str(excel1_data_dict['01 统一社会信用代码：']),
+                "组织机构代码": float_to_str(excel1_data_dict['组织机构代码：']),
+                "法人单位名称": float_to_str(excel1_data_dict['02 法人单位名称：']),
+                "法定代表人 （单位负责人）": float_to_str(excel1_data_dict['03 法定代表人 （单位负责人）：']),
                 "联系方式": {
-                    "固话": str(excel1_data_dict['04 联系方式：固定电话：']),
-                    "手机": str(excel1_data_dict['移动电话：'])
+                    "固话": float_to_str(excel1_data_dict['04 联系方式：固定电话：']),
+                    "手机": float_to_str(excel1_data_dict['移动电话：'])
                 },
                 "企业所在地行政区划代码": str(excel1_data_dict['05 企业所在地行政区划代码：']),
                 "单位隶属关系": str(excel1_data_dict['06 单位隶属关系(仅限国有单位填写)：']),
