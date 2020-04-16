@@ -117,12 +117,14 @@ def upload_sample_table():
     file.save(os.path.join(SHORT_UPLOAD_PATH, filename))
     # 2.2 获取eccel表值进行验证
     data = xlrd.open_workbook(SHORT_UPLOAD_PATH+filename)
-    excel1_data_dict, a = excel_JY(data, SHORT_UPLOAD_PATH+filename, jwt_decode['username'])
-    if excel1_data_dict is None and a is not None:
+    try:
+        excel1_data_dict, excel2_data_dict, a = excel_JY(data, SHORT_UPLOAD_PATH+filename, jwt_decode['username'])
+    except Exception as e:
+        return jsonify({'msg': "请填写正确的统一社会信用代码", 'status': 0})
+    if excel1_data_dict is None and excel2_data_dict is None and a is not None:
         return jsonify({'msg': a, 'status': 0})
-
     # 3. 数据入库，文件存储
-    excel_s = excel_data_save(excel1_data_dict, jwt_decode['username'])
+    excel_s = excel_data_save(excel1_data_dict, excel2_data_dict, jwt_decode['username'])
     if excel_s is False:
         return jsonify({'msg': "数据存储失败请稍后尝试", 'status': 0})
     # 3.1 文件存储
@@ -152,10 +154,13 @@ def excel_JY(data, excel_path, jwt_name):
     """
     # 1.数据格式化
     excel1 = data.sheet_by_index(0)
+    excel2 = data.sheet_by_index(1)
     excel1_data = []
+    excel2_data = []
     excel1_data_dict = {}
+    excel2_data_dict = {}
     try:
-        # 获取[]
+        # 1.获取人工成本表
         # for i in range(1, excel1.nrows):
         for i in range(1, 15):
             excel1_data += list(filter(None, excel1.row_values(rowx=i)))
@@ -179,13 +184,27 @@ def excel_JY(data, excel_path, jwt_name):
         # 获取{}
         for i in range(0, len(excel1_data), 2):
             excel1_data_dict[excel1_data[i]] = excel1_data[i + 1]
+        # 2.获取从业人员表
+        for i in range(3, excel2.nrows):
+            page_data = {}
+            data1 = []
+            excel2_data = list(filter(None, excel2.row_values(rowx=i)))
+            for j in range(0, 16):
+                key = str(list(filter(None, excel2.row_values(rowx=1)))[j]).replace("\n", "")
+                try:
+                    data1 = excel2_data[j]
+                except Exception as e:
+                    data1 = 0
+                page_data[key] = data1
+            excel2_data_dict[str(i)] = page_data
     except Exception as e:
         os.remove(excel_path)
         excel1_data_dict = None
-        return excel1_data_dict, None
+        excel2_data_dict = None
+        return excel1_data_dict, excel2_data_dict, None
 
     try:
-        # 2.校验数据
+        # 3.校验人工成本表数据
         if jwt_name != (str(int(excel1_data_dict["01 统一社会信用代码："]))):
             os.remove(excel_path)
             excel1_data_dict = None
@@ -216,24 +235,40 @@ def excel_JY(data, excel_path, jwt_name):
         common.验证.验证_劳动保护费用_错误(excel1_data_dict["劳动保护费用"])
         common.验证.验证_住房费用_错误(excel1_data_dict["住房费用"])
         common.验证.验证_其他人工成本_错误(excel1_data_dict["其他人工成本"])
+        # 4. 校验从业人员表数据
+        for i in range(3, excel2.nrows):
+            common.验证.验证_职工代码_错误(excel2_data_dict[str(i)]['职工代码'])
+            common.验证.验证_性别_错误(excel2_data_dict[str(i)]['性别'])
+            common.验证.验证_出生年份_错误(int(excel2_data_dict[str(i)]['出生年份']))
+            common.验证.验证_学历_错误(excel2_data_dict[str(i)]['学历'])
+            common.验证.验证_参加工作年份_错误(int(excel2_data_dict[str(i)]['参加工作年份']))
+            common.验证.验证_职业_错误(excel2_data_dict[str(i)]['职业'])
+            common.验证.验证_管理岗位_专业技术职称_职业技能等级_错误(excel2_data_dict[str(i)]['管理岗位/专业技术职称/职业技能等级'])
+            common.验证.验证_用工形式_错误(excel2_data_dict[str(i)]['用工形式'])
+            common.验证.验证_劳动合同类型_错误(excel2_data_dict[str(i)]['劳动合同类型'])
+            common.验证.验证_全年周平均工作小时数_错误(int(excel2_data_dict[str(i)]['全年周平均工作小时数']))
+            common.验证.验证_是否工会会员_错误(excel2_data_dict[str(i)]['是否工会会员'])
+            common.验证.验证_全年工资报酬合计_错误(int(excel2_data_dict[str(i)]['全年工资报酬合计']))
+            common.验证.验证_基本工资_错误(int(excel2_data_dict[str(i)]['基本工资（类）']))
+            common.验证.验证_绩效工资_错误(int(excel2_data_dict[str(i)]['绩效工资（类)']))
+            common.验证.验证_津补贴_错误(int(excel2_data_dict[str(i)]['津补贴（类）']))
+            common.验证.验证_加班加点工资_错误(int(excel2_data_dict[str(i)]['加班加点工资']))
     except Exception as e:
         excel1_data_dict = None
-        return excel1_data_dict, str(e.args)
+        excel2_data_dict = None
+        return excel1_data_dict, excel2_data_dict, str(e.args)
 
     # 3.返回数据
     os.remove(excel_path)
-    return excel1_data_dict, None
+    return excel1_data_dict, excel2_data_dict, None
 
-def excel_data_save(excel1_data_dict, jwt_name):
+def excel_data_save(excel1_data_dict, excel2_data_dict, jwt_name):
     """
     获取eccel数据入库
     :return:
     """
     # 1.保存数据
     try:
-        print("保存数据:------------")
-        pprint.pprint(excel1_data_dict)
-        
         wfjr_col.replace_one(
             {"统一社会信用代码": jwt_name},
             {
@@ -250,8 +285,8 @@ def excel_data_save(excel1_data_dict, jwt_name):
                 "行业类别代码": str(excel1_data_dict['07 行业类别代码：']),
                 "企业规模": str(excel1_data_dict['08 企业规模：']),
                 "登记注册类型": str(excel1_data_dict['09 登记注册类型：']),
-                "企业从业人员平均人数": str(excel1_data_dict['10 企 业 从 业 人 员 平 均 人 数：']),
-                "销售（营业）收入": excel1_data_dict['销售（营业）收入'],
+                "企业从业人员平均人数": int(excel1_data_dict['10 企 业 从 业 人 员 平 均 人 数：']),
+                "销售（营业）收入": str(excel1_data_dict['销售（营业）收入']),
                 "利润总额": str(excel1_data_dict['利润总额']),
                 "固定资产折旧": str(excel1_data_dict['固定资产折旧']),
                 "主营业务税金及附加": str(excel1_data_dict['主营业务税金及附加']),
@@ -260,13 +295,14 @@ def excel_data_save(excel1_data_dict, jwt_name):
                 "从业人员工资总额": str(excel1_data_dict['从业人员工资总额']),
                 "福利费用": str(excel1_data_dict['福利费用']),
                 "劳务派遣人员工资总额": str(excel1_data_dict['         劳务派遣人员工资总额']),
-                "在岗职工工资总额": str(excel1_data_dict['    其中：在岗职工工资总额']),
+                "在岗职工工资总额": int(excel1_data_dict['    其中：在岗职工工资总额']),
                 "教育经费": str(excel1_data_dict['教育经费']),
                 "保险费用": str(excel1_data_dict['保险费用']),
                 "劳动保护费用": str(excel1_data_dict['劳动保护费用']),
                 "住房费用": str(excel1_data_dict['住房费用']),
                 "其他人工成本": str(excel1_data_dict['其他人工成本']),
-            }, 
+                "从业人员工资报酬": excel2_data_dict,
+            },
             upsert=True
         )
     except Exception as e:
@@ -389,7 +425,14 @@ def get_company_info():
     elif admin_b == 2:
         return jsonify({'msg': "请重新登录token过期", 'status': 2})
     else:
-        return jsonify({'msg': "非管理员用户", 'status': 0})
+        # 非管理员用户只返回本公司信息
+        try:
+            jwt_decode = verify_jwt(login_token)
+            page_record = wfjr_col.find_one({'统一社会信用代码': jwt_decode['username']})
+            data = json_util.dumps(page_record)
+            return jsonify({'msg': data, 'status': 1})
+        except Exception as e:
+            return jsonify({'msg': '查询失败', 'status': 0})
 
     # 3.查询返回数据
     try:
