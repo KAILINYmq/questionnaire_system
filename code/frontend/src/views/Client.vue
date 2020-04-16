@@ -211,8 +211,8 @@ export default {
         },
         getOldSample() {
             getOldSampleTable().then(response => {
-               download("公司信息详情", response.data.msg.file)
-
+                // download("公司信息详情", response.data.msg.file)
+                console.log(response)
             })
             // getOldSampleTable().then(res => {
             //     alert(res.data.msg.file);

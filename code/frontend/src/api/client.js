@@ -8,7 +8,7 @@ export function getSampleTable() {
 
 export function getOldSampleTable() {
     const url = `${root_path}/test/get_old_sample_table?login_token=` + window.sessionStorage.getItem('ACCESS_TOKEN');
-    window.open(url);
+    return axios.get(url)
 }
 
 export function getCompanyInfo(obj) {
