@@ -390,8 +390,7 @@ def 验证_全年工资报酬合计_错误(x: int):
     值判定(
         x,
         field_name="全年工资报酬合计",
-        min_len=12000,
-        max_len=5000000,
+        min_len=1,
         max_open=False,
         min_open=False
     )
