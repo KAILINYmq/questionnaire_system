@@ -21,6 +21,7 @@
 
 <script>
 import axios from 'axios'
+import {root_path} from "@/api/backstage"
 
 export default {
     data() {
@@ -71,7 +72,7 @@ export default {
                         background: 'rgba(0, 0, 0, 0.7)'
                     })
 
-                    axios.post('http://127.0.0.1:8000/api/login', this.ruleForm)
+                    axios.post(`${root_path}/api/login`, this.ruleForm)
                         .then(response => {
                             loading.close()
                             const data = response.data

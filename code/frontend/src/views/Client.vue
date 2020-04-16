@@ -109,6 +109,7 @@ import {
     uploadSampleTable,
     getCompanyInfo
 } from "@/api/client"; //获取数据的接口
+import {root_path} from "@/api/backstage"
 
 import axios from "axios";
 
@@ -173,7 +174,7 @@ export default {
 
             axios({
                     method: "post",
-                    url: `http://127.0.0.1:8000/test/upload_sample_table`,
+                    url: `${root_path}/test/upload_sample_table`,
                     data: formData,
                     headers: {
                         "Content-Type": "multipart/form-data;charset=utf-8", //'application/json;charset=UTF-8'
