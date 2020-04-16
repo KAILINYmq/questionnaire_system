@@ -156,7 +156,7 @@
                                 <div>
                                     <el-form label-width="80px" :model="addCompanyForm">
                                         <el-form-item label="统一社会信用码">
-                                            <el-input placeholder="请输入统一信贷码" v-model="addCompanyForm.username" clearable>
+                                            <el-input placeholder="请输入统一信代码" v-model="addCompanyForm.username" clearable>
                                             </el-input>
                                         </el-form-item>
                                         <el-form-item label="联系方式(手机号)">
@@ -189,7 +189,8 @@ import {
     getCompanyList,
     getCompanyInfo,
     delCompany,
-    getNewUser
+    getNewUser,
+    addCompany
 } from "@/api/backstage"; //获取数据的接口
 export default {
     data() {
@@ -246,11 +247,12 @@ export default {
         addCompanyUser() {
             this.addCompanyForm.login_token = window.sessionStorage.getItem('ACCESS_TOKEN');
             // alert(JSON.stringify(this.addCompanyForm))
-            getNewUser(this.addCompanyForm).then(res => {
+            addCompany(this.addCompanyForm).then(res => {
                 if (res.data.status === 0) {
                     alert(res.data.msg)
                 }else {
                     this.addCompanyForm = '';
+                    alert('添加成功')
                 }
             })
         },

@@ -22,3 +22,8 @@ export function getNewUser(obj) {
         'http://127.0.0.1:8000/test/get_new_users', obj
     )
 }
+export function addCompany(obj) {
+    return axios.post(
+        'http://127.0.0.1:8000/test/add_company', obj
+    )
+}

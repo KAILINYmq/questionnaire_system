@@ -478,44 +478,64 @@ def del_company():
     except Exception as e:
         return jsonify({'msg': "查询删除失败", 'status': 0})
 
-# @view.route("/edit_company_info", methods=["POST"])
-# def edit_company_info():
-#     """
-#     管理员编辑/添加公司, 公司信息所指的id存在则进行编辑, 不存在则进行添加
-#     :return:
-#     """
-#     # 2. 验证管理员身份
-#     token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE1ODEzMzE3MDAsInVzZXJuYW1lIjoiMSIsInJlZnJlc2giOmZhbHNlfQ.c308l6HYWE4UbQmquvk5A_TpoAnuU60CTgjsvqfh_-E"
-#     admin_b = admin_JWT(token)
-#     if admin_b == 1:
-#         print("管理员操作")
-#     elif admin_b == 2:
-#         return jsonify({'msg': "请重新登录token过期", 'status': 2})
-#     else:
-#         print("非法操作")
-#     return "123"
-    # # assert list(CompanyInfo.__dict__.keys()) == list(request.json.keys())
-    # ret = {}
-    #
-    # data: dict = request.json
-    # data: Object = new(objects['CompanyInfo']).from_dict(data)
-    # check_ret = data.check()
-    # flag = True
-    # for item in check_ret:
-    #     if 'error' in item.keys():
-    #         flag = False
-    #         ret['oper_result'] = flag
-    #         break
-    # if flag:
-    #
-    #     filter = {'统一社会信用代码': data.get('统一社会信用代码')}
-    #     item = gssi_col.find_one(filter)
-    #     if item:
-    #         ret['oper_result'] = gssi_col.update_one(filter, data).raw
-    #     else:
-    #         ret['oper_result'] = gssi_col.insert_one(data).raw
-    # ret['message'] = check_ret
-    # return jsonify(ret)
+def check_admin(request_json):
+    # 1.获取参数校验参数
+    request.get_json(force=True)
+    data = request_json
+    try:
+        login_token = data.get('login_token')
+        id = data.get('id')
+    except Exception as e:
+        return {'msg': "参数错误", 'status': 1}
+    if not [login_token, id]:
+        return {'msg': "参数错误", 'status': 1}
+
+    # 2. 验证管理员身份
+    admin_b = admin_JWT(login_token)
+    if admin_b == 1:
+        print("管理员操作")
+    elif admin_b == 2:
+        return {'msg': "请重新登录token过期", 'status': 2}
+    else:
+        return {'msg': "非管理员用户", 'status': 1}
+    return {'msg': "非管理员用户", 'status': 0}
+
+@view.route("/add_company", methods=["POST"])
+def add_company():
+    """
+    管理员添加公司
+    :return:
+    """
+    request.get_json(force=True)
+    check_admin_ret = check_admin(request.json)
+    if check_admin_ret['status'] != 0:
+        return jsonify(check_admin_ret)
+    ret = {}
+    
+    data: dict = request.json
+
+    item = {
+        "username": data.get('username'),
+        "password": data.get('password'),
+        "mobile": data.get('mobile'),
+        "admin": 0,
+        "is_de": 0
+    }
+    if not (item['username'] and item['password'] and item['mobile']):
+        return jsonify({'msg': "参数错误", 'status': 0, 'data': data})
+    
+    filter = {"username": item['username']}
+    find_ret = gssi_col.find_one(filter)
+    if find_ret and find_ret.get('admin', 0) != 0:
+        return jsonify({'msg': "非法操作, 不可更改管理员", 'status': 0, 'data': data})
+
+    if find_ret:
+        gssi_col.replace_one(filter, item)
+    else:
+        gssi_col.insert_one(item)
+
+    ret['status'] = 1
+    return jsonify(ret)
 # def test_edit():
 #     objects = Object.read_from('../common/ADT.js')
 #
