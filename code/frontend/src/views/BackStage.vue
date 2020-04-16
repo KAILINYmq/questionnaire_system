@@ -129,7 +129,7 @@
                                         </el-table-column>
                                         <el-table-column fixed="right" width="150px">
                                             <template slot="header">
-                                                <el-input v-model="search" size="mini" placeholder="输入关键字搜索" />
+                                                <el-input v-model="search" size="mini" placeholder="输入 法人单位名称 关键字以搜索" />
                                             </template>
                                             <template slot-scope="scope">
                                                 <el-button size="mini" @click="handleView(scope.$index, scope.row)">查看</el-button>
