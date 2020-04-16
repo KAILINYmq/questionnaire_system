@@ -163,7 +163,7 @@ export default {
 
             axios({
                     method: "post",
-                    url: `http://121.43.189.184:8000/test/upload_sample_table`,
+                    url: `http://127.0.0.1:8000/test/upload_sample_table`,
                     data: formData,
                     headers: {
                         "Content-Type": "multipart/form-data;charset=utf-8", //'application/json;charset=UTF-8'

@@ -71,11 +71,11 @@ export default {
                         background: 'rgba(0, 0, 0, 0.7)'
                     })
 
-                    axios.post('http://121.43.189.184:8000/api/login', this.ruleForm)
+                    axios.post('http://127.0.0.1:8000/api/login', this.ruleForm)
                         .then(response => {
                             loading.close()
                             const data = response.data
-                            alert(data.msg)
+                            // alert(data.msg)
                             if (data.msg === "登录成功") {
                                 // 保存登录凭证
                                 window.sessionStorage.setItem('ACCESS_TOKEN', response.data.login_token)
