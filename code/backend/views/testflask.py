@@ -117,10 +117,9 @@ def upload_sample_table():
     file.save(os.path.join(SHORT_UPLOAD_PATH, filename))
     # 2.2 获取eccel表值进行验证
     data = xlrd.open_workbook(SHORT_UPLOAD_PATH+filename)
-    try:
-        excel1_data_dict, excel2_data_dict, a = excel_JY(data, SHORT_UPLOAD_PATH+filename, jwt_decode['username'])
-    except Exception as e:
-        return jsonify({'msg': "请填写正确的统一社会信用代码", 'status': 0})
+    
+    excel1_data_dict, excel2_data_dict, a = excel_JY(data, SHORT_UPLOAD_PATH+filename, jwt_decode['username'])
+
     if excel1_data_dict is None and excel2_data_dict is None and a is not None:
         return jsonify({'msg': a, 'status': 0})
     # 3. 数据入库，文件存储
@@ -207,8 +206,7 @@ def excel_JY(data, excel_path, jwt_name):
         # 3.校验人工成本表数据
         if jwt_name != (str(int(excel1_data_dict["01 统一社会信用代码："]))):
             os.remove(excel_path)
-            excel1_data_dict = None
-            return excel1_data_dict, None
+            return None, None, f"上传的统一社会信用代码与登录的账户不符, 期待{jwt_name}, 得到{excel1_data_dict['01 统一社会信用代码：']}"
         common.验证.验证_法人单位名称_错误(excel1_data_dict["02 法人单位名称："])
         common.验证.验证_法定代表人_单位负责人_错误(excel1_data_dict["03 法定代表人 （单位负责人）："])
         common.验证.验证_固话_错误(excel1_data_dict["04 联系方式：固定电话："])
@@ -268,6 +266,7 @@ def excel_data_save(excel1_data_dict, excel2_data_dict, jwt_name):
     :return:
     """
     # 1.保存数据
+    print(excel1_data_dict, excel2_data_dict, jwt_name)
     try:
         wfjr_col.replace_one(
             {"统一社会信用代码": jwt_name},
@@ -306,6 +305,7 @@ def excel_data_save(excel1_data_dict, excel2_data_dict, jwt_name):
             upsert=True
         )
     except Exception as e:
+        print(e)
         return False
 
     # 2.返回数据
