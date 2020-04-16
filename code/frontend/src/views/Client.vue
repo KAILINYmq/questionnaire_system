@@ -8,9 +8,19 @@
         <el-button type="info" @click="getOldSample">下载历史</el-button>
         <br />
         <br />
-        <el-upload class="inline-block" :multiple='false' :auto-upload='true' list-type='text' :show-file-list='true' :before-upload="beforeUpload" :drag='true' action='' :limit="1" :on-exceed="handleExceed" :http-request="uploadFile">
+        <el-upload 
+            class="inline-block" 
+            :multiple='false' 
+            :auto-upload='true' 
+            list-type='text' 
+            :show-file-list='true' 
+            :before-upload="beforeUpload" 
+            :drag='true' 
+            action='' 
+            :http-request="uploadFile"
+        >
             <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
-            <div class="el-upload__tip" slot="tip">仅限csv格式，单文件不超过1MB</div>
+            <div class="el-upload__tip" slot="tip">仅限 xls/xlsx 格式，单文件不超过 1MB</div>
         </el-upload>
     </el-drawer>
 
