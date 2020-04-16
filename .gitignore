@@ -6,3 +6,5 @@ codes/.vscode/launch.json
 .vscode
 hello-world/node_modules
 codes/frontend/node_modules
+*.xls
+*.xlsx
