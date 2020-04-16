@@ -182,6 +182,10 @@ export default {
                     }
                 })
                 .then(function (response) {
+                    alert(response.data.msg)
+                    if (response.data.status == 1){
+                        location.reload()
+                    }
                     return response;
                 })
                 .catch(function (error) {
