@@ -47,7 +47,7 @@
                     </el-form-item>
                 </el-col>
                 <el-col :span="12">
-                    <el-form-item label="计划类型" prop="组织机构代码">
+                    <el-form-item label="组织机构代码" prop="组织机构代码">
                         <el-input :disabled="true" v-model="companyInfoForm.组织机构代码"></el-input>
                     </el-form-item>
                 </el-col>

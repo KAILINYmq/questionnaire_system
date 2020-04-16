@@ -45,11 +45,18 @@
                                         
                                         <el-row>
                                             <el-col :span="12">
-                                                <el-form-item label="联系方式" prop="联系方式">
-                                                    <el-input :disabled="true" v-model="companyInfoForm.联系方式"></el-input>
+                                                <el-form-item label="联系方式-手机" prop="联系方式">
+                                                    <el-input :disabled="true" v-model="companyInfoForm.联系方式.手机"></el-input>
                                                 </el-form-item>
                                             </el-col>
                                             <el-col :span="12">
+                                                <el-form-item label="联系方式-固话" prop="联系方式">
+                                                    <el-input :disabled="true" v-model="companyInfoForm.联系方式.固话"></el-input>
+                                                </el-form-item>
+                                            </el-col>
+                                        </el-row>
+                                         <el-row>
+                                            <el-col :span="24">
                                                 <el-form-item label="企业所在地行政区划代码" prop="企业所在地行政区划代码">
                                                     <el-input :disabled="true" v-model="companyInfoForm.企业所在地行政区划代码"></el-input>
                                                 </el-form-item>
@@ -152,7 +159,7 @@
                                             <el-input placeholder="请输入统一信贷码" v-model="addCompanyForm.username" clearable>
                                             </el-input>
                                         </el-form-item>
-                                        <el-form-item label="联系方式">
+                                        <el-form-item label="联系方式(手机号)">
                                             <el-input placeholder="请输入联系方式" v-model="addCompanyForm.mobile" clearable>
                                             </el-input>
                                         </el-form-item>
