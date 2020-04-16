@@ -204,8 +204,9 @@ def excel_JY(data, excel_path, jwt_name):
 
     try:
         # 3.校验人工成本表数据
-        if jwt_name != (str(int(excel1_data_dict["01 统一社会信用代码："]))):
+        if jwt_name != str(excel1_data_dict["01 统一社会信用代码："]):
             os.remove(excel_path)
+
             return None, None, f"上传的统一社会信用代码与登录的账户不符, 期待{jwt_name}, 得到{excel1_data_dict['01 统一社会信用代码：']}"
         common.验证.验证_法人单位名称_错误(excel1_data_dict["02 法人单位名称："])
         common.验证.验证_法定代表人_单位负责人_错误(excel1_data_dict["03 法定代表人 （单位负责人）："])
