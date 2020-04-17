@@ -17,18 +17,16 @@
                                     <el-divider content-position="center">
                                         <h3>公司详细信息</h3>
                                     </el-divider>
-                                    <el-form label-position="right" :model="'editPlanForm'" label-width="80px" ref="companyInfoForm">
+                                    <el-form label-position="right" :model="editPlanForm" label-width="160px" ref="editPlanForm">
                                         <el-row>
                                             <el-col :span="20">
                                                 <el-form-item label="法人单位名称" prop="法人单位名称">
                                                     <el-input :disabled="true" v-model="companyInfoForm.法人单位名称"></el-input>
                                                 </el-form-item>
                                             </el-col>
-                                            <!-- <el-col :span="12">
-                                                <el-form-item label="法定代表人" prop="法定代表人">
-                                                    <el-input :disabled="true" v-model="companyInfoForm.法定代表人"></el-input>
-                                                </el-form-item>
-                                            </el-col> -->
+                                            <el-col :span="4">
+                                                
+                                            </el-col>
                                         </el-row>
                                         <el-row>
                                             <el-col :span="12">
@@ -45,12 +43,12 @@
                                         
                                         <el-row>
                                             <el-col :span="12">
-                                                <el-form-item label="联系方式-手机" prop="联系方式">
+                                                <el-form-item label="联系方式(手机)" prop="联系方式">
                                                     <el-input :disabled="true" v-model="companyInfoForm.联系方式.手机"></el-input>
                                                 </el-form-item>
                                             </el-col>
                                             <el-col :span="12">
-                                                <el-form-item label="联系方式-固话" prop="联系方式">
+                                                <el-form-item label="联系方式(固话)" prop="联系方式">
                                                     <el-input :disabled="true" v-model="companyInfoForm.联系方式.固话"></el-input>
                                                 </el-form-item>
                                             </el-col>

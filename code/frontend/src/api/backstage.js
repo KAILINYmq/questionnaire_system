@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-const root_path = "" // http://127.0.0.1:8000
+const root_path = "http://121.43.189.184:8000" // http://127.0.0.1:8000  http://39.106.37.95:7501
 
 export function getCompanyList(obj) {
     return axios.post(
@@ -28,4 +28,4 @@ export function addCompany(obj) {
         `${root_path}/test/add_company`, obj
     )
 }
-export {root_path}
+export { root_path }
