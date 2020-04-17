@@ -250,6 +250,7 @@ export default {
         },
         getOldSample() {
             getOldSampleTable().then(response => {
+<<<<<<< HEAD
                 // alert(JSON.stringify(response.data.msg))
                 let resData = response.data.msg;
                 console.log(JSON.parse(JSON.stringify(response.data.msg)))
@@ -262,6 +263,10 @@ export default {
                 // alert(obj)
                 window.location.href = 'http://121.43.189.184:8000' + JSON.parse(dataArray[dataArray.length - 1]).file // alert(JSON.stringify(response.data.msg[0].file))
 
+=======
+                // download("公司信息详情", response.data.msg.file)
+                console.log(response)
+>>>>>>> 911639fec16c27b2707a34e700accc015987f79b
             })
 
         },
