@@ -4,14 +4,14 @@
 
     <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px">
         <el-form-item label="统一代码" prop="username">
-            <el-input v-model="ruleForm.username" placeholder="请输入社会信用统一代码"></el-input>
+            <el-input v-model="ruleForm.username" placeholder="请输入社会信用统一代码" clearable ></el-input>
         </el-form-item>
     </el-form>
     <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px">
         <el-form-item label="密码" prop="password">
-            <el-input v-model="ruleForm.password" type="password" placeholder="请输入密码" show-password></el-input>
+            <el-input v-model="ruleForm.password" type="password" placeholder="请输入密码" show-password clearable></el-input>
         </el-form-item>
-        <el-button class="btn" type="primary" @click="submitForm('ruleForm')">登录</el-button>
+        <el-button class="btn" type="primary" @click="submitForm('ruleForm')" clearable>登录</el-button>
         <el-dialog :visible.sync="visible" title="提示">
             <p>{{message}}</p>
         </el-dialog>
@@ -39,12 +39,12 @@ export default {
                         message: '请输入统一社会信用代码',
                         trigger: 'blur'
                     },
-                    // {
-                    //     min: 6,
-                    //     max: 6,
-                    //     message: '长度为 18 个字符',
-                    //     trigger: 'blur'
-                    // }
+                    {
+                        min: 1,
+                        max: 18,
+                        message: '长度为 18 个字符',
+                        trigger: 'blur'
+                    }
                 ],
                 password: [{
                         required: true,
@@ -85,6 +85,7 @@ export default {
                                     path: '/client'
                                 })
                             } else if (data.msg === "admin登录成功") {
+                                
                                 window.sessionStorage.setItem('ACCESS_TOKEN', response.data.login_token)
                                 this.$router.push({
                                     path: '/back'

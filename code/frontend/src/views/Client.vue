@@ -1,12 +1,11 @@
 // 客户方，公司上传和下载
 <template>
 <div class="client">
-    <a href="http://121.43.189.184:8000/upload_table/15814777631/15815015401style_sheet.xlsx" target="_blank">aaa</a>
-    <a href="http://121.43.189.184:8000/upload_table/15815015311style_sheet.xlsx">测试下载</a>
+    <!-- <a href="http://121.43.189.184:8000/upload_table/15814777631/15815015401style_sheet.xlsx" target="_blank">aaa</a> -->
+    <!-- <a href="http://121.43.189.184:8000/upload_table/15815015311style_sheet.xlsx">测试下载</a> -->
 
     <el-drawer title="上传与下载" :visible.sync="drawer" :with-header="false">
         <el-button type="primary" @click="getSampleTable">下载样例</el-button>
-
         <el-button type="info" @click="getOldSample">下载历史</el-button>
         <br />
         <br />
@@ -22,7 +21,7 @@
             上传与下载
         </el-button>
         <div class="el-upload__tip">（具体信息请下载查看）</div>
-        <el-form label-position="right" :model="'companyInfoForm'" label-width="170px" ref="companyInfoForm">
+        <el-form label-position="right" :model="companyInfoForm" label-width="170px" ref="companyInfoForm">
             <el-row>
                 <el-col :span="16">
                     <el-form-item label="法人单位名称" prop="法人单位名称">
@@ -99,7 +98,9 @@
                 <el-col :span="8"></el-col>
             </el-row>
         </el-form>
-        <el-table v-loading="loading" :data="moneyTable" :header-cell-style="{background:'#eef1f6',color:'#606266'}" style="width: 100%" max-height="500px" border fit highlight-current-row align="center" stripe>
+
+        <h3>从业人员工资报酬</h3>
+        <el-table  :data="moneyTable" :header-cell-style="{background:'#eef1f6',color:'#606266'}" style="width: 100%" max-height="500px" border fit highlight-current-row align="center" stripe>
             <el-table-column prop="职工代码" label="职工代码" width="40">
             </el-table-column>
             <el-table-column prop="出生年份" label="出生年份" width="60">
@@ -110,11 +111,11 @@
             </el-table-column>
             <el-table-column prop="是否工会会员" label="是否工会会员" width="60">
             </el-table-column>
-            <el-table-column prop="基本工资（类）" label="基本工资（类）" >
+            <el-table-column prop="基本工资（类）" label="基本工资（类）">
             </el-table-column>
-            <el-table-column prop="绩效工资（类)" label="绩效工资（类)" >
+            <el-table-column prop="绩效工资（类)" label="绩效工资（类)">
             </el-table-column>
-            <el-table-column prop="用工形式" label="用工形式" >
+            <el-table-column prop="用工形式" label="用工形式">
             </el-table-column>
             <el-table-column prop="津补贴（类）" label="津补贴（类）" width="100">
             </el-table-column>
@@ -126,7 +127,7 @@
             </el-table-column>
             <el-table-column prop="参加工作年份" label="参加工作年份" width="100">
             </el-table-column>
-            <el-table-column prop="全年周平均工作小时数" label="全年周平均工作小时数" >
+            <el-table-column prop="全年周平均工作小时数" label="全年周平均工作小时数">
             </el-table-column>
             <el-table-column prop="劳动合同类型" label="劳动合同类型" width="100">
             </el-table-column>
@@ -164,7 +165,7 @@ export default {
                 登记注册类型: '',
                 企业从业人员平均人数: ''
             },
-            moneyTable: []
+            moneyTable: [],
         }
     },
     created() {
@@ -184,6 +185,8 @@ export default {
                     for (let i in moneyList) {
                         this.moneyTable.push(moneyList[i])
                     }
+                    // console.log(JSON.stringify(JSON.parse(response.data.msg)))
+                    // console.log(window.sessionStorage.getItem('ACCESS_TOKEN'))
                 }
 
             })
@@ -223,26 +226,16 @@ export default {
                 .then(function (response) {
                     alert(response.data.msg)
                     if (response.data.status == 1) {
+                        
                         location.reload()
-                    }
+                    } 
                     return response;
                 })
                 .catch(function (error) {
                     return error;
                 });
         },
-        downloadFile(fileName, data) {
-            if (!data) {
-                return
-            }
-            let url = window.URL.createObjectURL(new Blob([data]))
-            let link = document.createElement('a')
-            link.style.display = 'none'
-            link.href = url;
-            link.setAttribute('download', fileName)
-            document.body.appendChild(link)
-            link.click()
-        },
+        
 
         // **************上传excel文件结束***************************
         getSampleTable() {
@@ -250,8 +243,6 @@ export default {
         },
         getOldSample() {
             getOldSampleTable().then(response => {
-<<<<<<< HEAD
-                // alert(JSON.stringify(response.data.msg))
                 let resData = response.data.msg;
                 console.log(JSON.parse(JSON.stringify(response.data.msg)))
                 let dataArray = JSON.parse(JSON.stringify(response.data.msg))
@@ -261,23 +252,12 @@ export default {
                 obj = JSON.parse(JSON.stringify(resData[resData.length - 1]))
                 console.log(obj)
                 // alert(obj)
-                window.location.href = 'http://121.43.189.184:8000' + JSON.parse(dataArray[dataArray.length - 1]).file // alert(JSON.stringify(response.data.msg[0].file))
-
-=======
-                // download("公司信息详情", response.data.msg.file)
+                window.location.href = root_path + JSON.parse(dataArray[dataArray.length - 1]).file // alert(JSON.stringify(response.data.msg[0].file))
                 console.log(response)
->>>>>>> 911639fec16c27b2707a34e700accc015987f79b
             })
 
-        },
-        uploadSampleTable() {
-
-            uploadSampleTable().then(response => {
-                alert(response.data.msg)
-                this.$message(response.data.msg);
-
-            })
         }
+        
     }
 };
 </script>
